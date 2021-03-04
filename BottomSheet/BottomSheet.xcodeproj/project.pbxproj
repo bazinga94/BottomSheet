@@ -10,6 +10,8 @@
 		B25B7DF525F0A85600BA31C1 /* BottomSheet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B25B7DEB25F0A85600BA31C1 /* BottomSheet.framework */; };
 		B25B7DFA25F0A85600BA31C1 /* BottomSheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25B7DF925F0A85600BA31C1 /* BottomSheetTests.swift */; };
 		B25B7DFC25F0A85600BA31C1 /* BottomSheet.h in Headers */ = {isa = PBXBuildFile; fileRef = B25B7DEE25F0A85600BA31C1 /* BottomSheet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B25B7E0625F0A8BA00BA31C1 /* JH-BottomSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25B7E0525F0A8BA00BA31C1 /* JH-BottomSheet.swift */; };
+		B25B7E0825F0A9AB00BA31C1 /* Utility.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25B7E0725F0A9AB00BA31C1 /* Utility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +31,8 @@
 		B25B7DF425F0A85600BA31C1 /* BottomSheetTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BottomSheetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B25B7DF925F0A85600BA31C1 /* BottomSheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetTests.swift; sourceTree = "<group>"; };
 		B25B7DFB25F0A85600BA31C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B25B7E0525F0A8BA00BA31C1 /* JH-BottomSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "JH-BottomSheet.swift"; sourceTree = "<group>"; };
+		B25B7E0725F0A9AB00BA31C1 /* Utility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utility.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +77,8 @@
 			children = (
 				B25B7DEE25F0A85600BA31C1 /* BottomSheet.h */,
 				B25B7DEF25F0A85600BA31C1 /* Info.plist */,
+				B25B7E0525F0A8BA00BA31C1 /* JH-BottomSheet.swift */,
+				B25B7E0725F0A9AB00BA31C1 /* Utility.swift */,
 			);
 			path = BottomSheet;
 			sourceTree = "<group>";
@@ -148,6 +154,7 @@
 				TargetAttributes = {
 					B25B7DEA25F0A85600BA31C1 = {
 						CreatedOnToolsVersion = 11.6;
+						LastSwiftMigration = 1160;
 					};
 					B25B7DF325F0A85600BA31C1 = {
 						CreatedOnToolsVersion = 11.6;
@@ -195,6 +202,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B25B7E0825F0A9AB00BA31C1 /* Utility.swift in Sources */,
+				B25B7E0625F0A8BA00BA31C1 /* JH-BottomSheet.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,6 +349,7 @@
 		B25B7E0025F0A85600BA31C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -355,6 +365,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = JH.BottomSheet;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -363,6 +374,7 @@
 		B25B7E0125F0A85600BA31C1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -386,6 +398,7 @@
 		B25B7E0325F0A85600BA31C1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = BottomSheetTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -403,6 +416,7 @@
 		B25B7E0425F0A85600BA31C1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = BottomSheetTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
