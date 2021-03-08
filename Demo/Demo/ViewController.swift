@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
 	@IBAction func showBottomSheet(_ sender: Any) {
-		let bottomSheet = ADAMBottomSheet.init(childViewController: BaseViewController(), height: 300, dim: true)
+		let bottomSheet = BottomSheet.init(childViewController: BaseViewController(), height: 300, dim: true)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -76,7 +76,10 @@ extension BaseViewController: UIScrollViewDelegate {
 	}
 }
 
-class ADAMBottomSheet: UIViewController {
+class BottomSheet: UIViewController {
+	enum Constant {
+		static let delay = 0.3
+	}
 	private var childViewController: BaseViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private var shadowView = UIImageView()					// 바텀시트 상단의 그림자 뷰
@@ -174,7 +177,7 @@ class ADAMBottomSheet: UIViewController {
 
 	private func sheetAppearAnimation(completion: CommonFuncType? = nil) {
 		topConstraint.constant = -self.sheetHeight
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			// 호출 Interaction: 올라올 때 빠르게 시작해서 점점 속도가 주는 형태
 			self.view.backgroundColor = self.dimColor
 			self.view.layoutIfNeeded()
@@ -316,7 +319,7 @@ class ADAMBottomSheet: UIViewController {
 		self.topConstraint.constant = getBottomSafeAreaInsets() + shadowViewHeight
 		self.childViewController.view.endEditing(true) // dismiss시 UITextField end editing
 
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			// 종료 Interaction: 내려갈 때 빠르게 시작해서 점점 속도가 줄면서 사라지는 형태
 			self.view.layoutIfNeeded()
 			self.view.backgroundColor = UIColor.clear
@@ -337,7 +340,7 @@ class ADAMBottomSheet: UIViewController {
 		topConstraint.constant = -height
 		heightConstraint.constant = height
 		sheetHeight = height
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: {
+		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			self.view.layoutIfNeeded()
 		})
 	}
