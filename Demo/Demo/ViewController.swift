@@ -11,7 +11,7 @@ import UIKit
 class ViewController: UIViewController {
 
 	@IBAction func showBottomSheet(_ sender: Any) {
-		let vc = BaseViewController()
+		let vc = SheetViewController()
 		vc.view.backgroundColor = .red
 		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
 		bottomSheet.show(presentView: self)
@@ -47,9 +47,9 @@ protocol DismissListenerDelegate: AnyObject {
 	func onDismiss()
 }
 
-class BaseViewController: UIViewController { }
+class SheetViewController: UIViewController { }
 
-extension BaseViewController: UIGestureRecognizerDelegate {
+extension SheetViewController: UIGestureRecognizerDelegate {
 	// MARK: - UIGestureRecognizer가 동시에 발생할 때, 모두 허용 할지 판단
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 		//		if let tableView = bottomSheetTableView, tableView.contentOffset.y <= 0 { // 바텀시트 테이블 상단에서 스크롤시 dismiss
@@ -69,7 +69,7 @@ extension BaseViewController: UIGestureRecognizerDelegate {
 	}
 }
 
-extension BaseViewController: UIScrollViewDelegate {
+extension SheetViewController: UIScrollViewDelegate {
 	// MARK: - 바텀시트의 tableview는 상단 bounce를 막는다
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 		//		if let tableView = bottomSheetTableView, tableView.contentOffset.y <= 0 {
@@ -82,7 +82,7 @@ class BottomSheet: UIViewController {
 	enum Constant {
 		static let delay = 0.3
 	}
-	private var childViewController: BaseViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
+	private var childViewController: SheetViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
 	private var dimColor: UIColor!							// 백그라운드 dim color
@@ -118,7 +118,7 @@ class BottomSheet: UIViewController {
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: BaseViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil) {
+	init(childViewController: SheetViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -139,7 +139,7 @@ class BottomSheet: UIViewController {
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: BaseViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: SheetViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
