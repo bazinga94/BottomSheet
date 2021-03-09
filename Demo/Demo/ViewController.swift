@@ -11,7 +11,9 @@ import UIKit
 class ViewController: UIViewController {
 
 	@IBAction func showBottomSheet(_ sender: Any) {
-		let bottomSheet = BottomSheet.init(childViewController: BaseViewController(), height: 300, dim: true)
+		let vc = BaseViewController()
+		vc.view.backgroundColor = .red
+		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -82,9 +84,7 @@ class BottomSheet: UIViewController {
 	}
 	private var childViewController: BaseViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
-	private var shadowView = UIImageView()					// 바텀시트 상단의 그림자 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
-	private let shadowViewHeight: CGFloat = 40 				// bottom sheet 상단 그림자뷰 높이
 	private var dimColor: UIColor!							// 백그라운드 dim color
 	private var dim: Bool = true							// 백그라운드 dim 여부
 	private var noAddBottomSafeArea: Bool = false			// 바텀시트 높이 계산시, bottomSafeArea를 고려하지 않습니다.
@@ -95,7 +95,6 @@ class BottomSheet: UIViewController {
 	var modalType: ModalType = .fixed 						// 공통가이드의 Modal Type 구분
 	var availablePanning: Bool = true						// panning 가능 여부
 	var isTapDismiss: Bool = true 							// 백그라운드 뷰 터치시 dismiss 되는지 여부
-	var isInvestModal: Bool = false 						// 투자 조회 화면 modal 구분 변수
 	var showCompletion: CommonFuncType? 					// 바텀시트를 show 할때 수행 할 closure
 	var moreSheetHeight: CGFloat?							// view height 보다 sheetHeight가 클때 그 차이 값
 	weak var dismissListener: DismissListenerDelegate? 		// dismiss 되었을때 로직을 수행 할 handler
@@ -119,7 +118,7 @@ class BottomSheet: UIViewController {
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: BaseViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, isInvestModal: Bool = false, dismissListener: DismissListenerDelegate? = nil) {
+	init(childViewController: BaseViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -127,7 +126,6 @@ class BottomSheet: UIViewController {
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: 0.5) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
-		self.isInvestModal = isInvestModal
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .fixed
@@ -141,14 +139,13 @@ class BottomSheet: UIViewController {
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: BaseViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, isInvestModal: Bool = false, dismissListener: DismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: BaseViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: 0.5) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
-		self.isInvestModal = isInvestModal
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .flexible
@@ -160,8 +157,6 @@ class BottomSheet: UIViewController {
 		super.viewDidLoad()
 		self.view.backgroundColor = .clear
 		setupContainerView()
-		setupShadowImageView()
-		setupBarImageView()
 		setupBackgroundView()
 		setupChildViewController()
 		setupGestureRecognizer()
@@ -186,44 +181,6 @@ class BottomSheet: UIViewController {
 				completion()
 			}
 		})
-	}
-
-	// MARK: - bottom sheet 상단에 shadow 이미지 붙이기
-	private func setupShadowImageView() {
-		//		let shadowImage = UIImage.init(named: "commonBgBottomPopupShadow")
-		//		shadowView = UIImageView.init(image: shadowImage)
-		//		if isInvestModal {
-		//			setTintColorImageView([shadowView], color: UIColor(named: "INVEST_HEADER_COLOR"))
-		//		}
-
-		self.view.addSubview(shadowView)
-		self.view.sendSubviewToBack(shadowView)
-		shadowView.translatesAutoresizingMaskIntoConstraints = false
-		shadowView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
-		shadowView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
-		shadowView.bottomAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
-		shadowView.heightAnchor.constraint(equalToConstant: shadowViewHeight).isActive = true
-	}
-
-	// MARK: - bottom sheet 상단에 bar 이미지 붙이기
-	private func setupBarImageView() {
-		guard availablePanning else { // panning이 불가능할 때에는 bar 이미지 없음
-			return
-		}
-
-		// color, image set
-		//		let barImage = UIImage.init(named: "commonBgBottomBar")
-		//		let barView = UIImageView.init(image: barImage)
-		let barView = UIImageView.init()
-		//		let barColor = isInvestModal ? UIColor(named: "INVEST_BAR_COLOR") : UIColor(named: "GRAY_216_COLOR") // DarkMode 대응 색상 적용
-		//		setTintColorImageView([barView], color: barColor)
-
-		// constraint set
-		shadowView.addSubview(barView)
-		barView.translatesAutoresizingMaskIntoConstraints = false
-		barView.topAnchor.constraint(equalTo: shadowView.topAnchor, constant: 30).isActive = true
-		barView.centerXAnchor.constraint(equalTo: shadowView.centerXAnchor).isActive = true
-		barView.widthAnchor.constraint(equalToConstant: shadowViewHeight).isActive = true
 	}
 
 	// MARK: - bottom sheet의 container view의 초기 layout을 setting(바닥에서 나오기 전)
@@ -259,7 +216,7 @@ class BottomSheet: UIViewController {
 		backgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
 		backgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
 		backgroundView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-		backgroundView.bottomAnchor.constraint(equalTo: self.shadowView.topAnchor).isActive = true
+		backgroundView.bottomAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
 		self.view.layoutIfNeeded()
 
 		backgroundView.backgroundColor = .clear
@@ -267,7 +224,7 @@ class BottomSheet: UIViewController {
 
 	// MARK: - 바텀시트 높이가 유동적인 경우 높이를 계산한다
 	private func setupContainerHeight() {
-		if modalType == .flexible {
+		if modalType == .flexible {		// TODO: 코드 수정이 필요
 			//			var contentViewHeight = childViewController.bottomSheetContentView?.frame.size.height ?? 0
 			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
 			//			if contentViewHeight > maxHeight - 20 { // view 최대 높이보다 큰 경우, 최대높이 & scroll, image size : 20
@@ -286,9 +243,6 @@ class BottomSheet: UIViewController {
 			backgroundView.addGestureRecognizer(tapGestureRecognizer) // background tap gesture 등록
 		}
 		if availablePanning {
-			let shadowViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
-			shadowView.isUserInteractionEnabled = true
-			shadowView.addGestureRecognizer(shadowViewGestureRecognizer) // bar, title 영역 gesture 추가
 			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
 			containerViewGestureRecognizer.delegate = childViewController
 			containerView.addGestureRecognizer(containerViewGestureRecognizer) // bottom sheet 전체 영역 gesture 추가
@@ -316,7 +270,7 @@ class BottomSheet: UIViewController {
 	- Parameter: view의 dismiss closure
 	*/
 	public func dismissSheet(completion: CommonFuncType? = nil) {
-		self.topConstraint.constant = getBottomSafeAreaInsets() + shadowViewHeight
+		self.topConstraint.constant = getBottomSafeAreaInsets()
 		self.childViewController.view.endEditing(true) // dismiss시 UITextField end editing
 
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
