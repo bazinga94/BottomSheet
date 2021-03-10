@@ -42,26 +42,30 @@ class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
 }
 
 class BottomSheet: UIViewController {
+	// MARK: - Constant
 	enum Constant {
 		static let delay: Double = 0.3
 		static let maxDimAlpha: CGFloat = 0.5
 		static let flickingVelocity: CGFloat = 2000
 	}
+	// MARK: - Private variable
 	private var childViewController: UIViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
 	private var dimColor: UIColor!							// 백그라운드 dim color
 	private var dim: Bool = true							// 백그라운드 dim 여부
 	private var noAddBottomSafeArea: Bool = false			// 바텀시트 높이 계산시, bottomSafeArea를 고려하지 않습니다.
+	private var isTapDismiss: Bool = true 					// 백그라운드 뷰 터치시 dismiss 되는지 여부
+	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
+	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
 	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
 	var modalType: ModalType = .fixed 						// 공통가이드의 Modal Type 구분
 	var availablePanning: Bool = true						// panning 가능 여부
-	var isTapDismiss: Bool = true 							// 백그라운드 뷰 터치시 dismiss 되는지 여부
-	var showCompletion: CommonFuncType? 					// 바텀시트를 show 할때 수행 할 closure
-	weak var dismissListener: BottomSheetDismissListenerDelegate? 		// dismiss 되었을때 로직을 수행 할 handler
+	weak var dismissListener: BottomSheetDismissListenerDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
+
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
 	enum ModalType {
@@ -134,6 +138,8 @@ class BottomSheet: UIViewController {
 		sheetAppearAnimation(completion: showCompletion)
 	}
 
+	/// bottom sheet 등장 애니메이션
+	/// - Parameter completion: show complete closure
 	private func sheetAppearAnimation(completion: CommonFuncType? = nil) {
 		topConstraint.constant = -self.sheetHeight
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
@@ -150,7 +156,7 @@ class BottomSheet: UIViewController {
 	// MARK: - bottom sheet의 container view의 초기 layout을 setting(바닥에서 나오기 전)
 	private func setupContainerView() {
 		self.view.addSubview(self.containerView)
-		self.containerView.translatesAutoresizingMaskIntoConstraints = false
+		containerView.translatesAutoresizingMaskIntoConstraints = false
 		containerView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
 		containerView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
 		heightConstraint = containerView.heightAnchor.constraint(equalToConstant: self.sheetHeight) // 바텀시트 높이를 동적으로 변화를 주기 위해
@@ -161,28 +167,23 @@ class BottomSheet: UIViewController {
 
 	// MARK: - child view controller를 현재 view controller의 자식 view로 추가 하고 해당 view를 container view와 동일하게 setting
 	private func setupChildViewController() {
-		self.addChild(self.childViewController)
-		self.containerView.addSubview(self.childViewController.view)
-
-		self.childViewController.view.translatesAutoresizingMaskIntoConstraints = false
-		self.childViewController.view.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor).isActive = true
-		self.childViewController.view.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
-		self.childViewController.view.topAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
-		self.childViewController.view.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true
-		self.childViewController.view.layoutIfNeeded()
+		addChild(self.childViewController)
+		containerView.addSubview(self.childViewController.view)
+		childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+		childViewController.view.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor).isActive = true
+		childViewController.view.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor).isActive = true
+		childViewController.view.topAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
+		childViewController.view.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor).isActive = true
 	}
 
 	// MARK: - dimm 효과를 주고 tap시 dismiss가 될 공간을 setting, 해당 뷰 tap시 dismiss가 될 수 있게 한다.
 	private func setupBackgroundView() {
 		self.view.addSubview(backgroundView)
-
 		backgroundView.translatesAutoresizingMaskIntoConstraints = false
 		backgroundView.leadingAnchor.constraint(equalTo: self.view.leadingAnchor).isActive = true
 		backgroundView.trailingAnchor.constraint(equalTo: self.view.trailingAnchor).isActive = true
 		backgroundView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
 		backgroundView.bottomAnchor.constraint(equalTo: self.containerView.topAnchor).isActive = true
-		self.view.layoutIfNeeded()
-
 		backgroundView.backgroundColor = .clear
 	}
 
@@ -233,8 +234,8 @@ class BottomSheet: UIViewController {
 	- Parameter: view의 dismiss closure
 	*/
 	public func dismissSheet(completion: CommonFuncType? = nil) {
-		self.topConstraint.constant = getBottomSafeAreaInsets()
-		self.childViewController.view.endEditing(true) // dismiss시 UITextField end editing
+		topConstraint.constant = getBottomSafeAreaInsets()
+		childViewController.view.endEditing(true) // dismiss시 UITextField end editing
 
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			// 종료 Interaction: 내려갈 때 빠르게 시작해서 점점 속도가 줄면서 사라지는 형태
