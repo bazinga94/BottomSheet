@@ -25,30 +25,10 @@ class ViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-		// Do any additional setup after loading the view.
 	}
 }
 
-// MARK: - Keywindow 반환
-func getKeyWindow() -> UIWindow? {
-	var window: UIWindow?
-	if #available(iOS 13.0, *) {
-		window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-	} else {
-		window = UIApplication.shared.keyWindow
-	}
-	return window
-}
-
-// MARK: - Bottom SafeAreaInsets을 반환하는 함수
-/// Bottom SafeAreaInsets을 반환하는 함수
-func getBottomSafeAreaInsets() -> CGFloat {
-	let bottomSafeArea: CGFloat = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
-	return bottomSafeArea
-}
-
-
-// MARK: - ADAMBottomSheet의 dismiss로직을 수행하는 listener
+// MARK: - BottomSheet dismiss listener
 protocol BottomSheetDismissListenerDelegate: AnyObject {
 	func onDismiss()
 }
@@ -58,7 +38,7 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 }
 
 class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
-	@IBOutlet weak var bottomSheetContentView: UIView!			// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
+	@IBOutlet weak var bottomSheetContentView: UIView!		// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
 }
 
 class BottomSheet: UIViewController {
@@ -98,7 +78,7 @@ class BottomSheet: UIViewController {
 	///   - height: bottom sheet 높이
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
+	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	init(childViewController: UIViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
@@ -115,13 +95,13 @@ class BottomSheet: UIViewController {
 
 	/// bottom sheet initializer(높이 유동적)
 	/// - Parameters:
-	///   - childViewController: bottom sheet의 container view에 들어갈 view controller(bottomSheetContentView가 정의되어야 한다)
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller(FlexibleBottomSheetDelegate를 상속)
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
+	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: UIViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: UIViewController & FlexibleBottomSheetDelegate, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
@@ -209,7 +189,7 @@ class BottomSheet: UIViewController {
 		if modalType == .flexible, let flexibleBottomSheet = childViewController as? FlexibleBottomSheetDelegate {
 			var contentViewHeight = flexibleBottomSheet.bottomSheetContentView?.frame.size.height ?? 0
 			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
-			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우, 최대높이 & scroll, image size : 20
+			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우
 				contentViewHeight = maxHeight
 			}
 			sheetHeight = noAddBottomSafeArea ? contentViewHeight : contentViewHeight + getBottomSafeAreaInsets()
@@ -331,5 +311,23 @@ class BottomSheet: UIViewController {
 				return
 			}
 		}
+	}
+
+	// MARK: - return KeyWindow
+	private func getKeyWindow() -> UIWindow? {
+		var window: UIWindow?
+		if #available(iOS 13.0, *) {
+			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+		} else {
+			window = UIApplication.shared.keyWindow
+		}
+		return window
+	}
+
+	// MARK: - return Bottom SafeAreaInsets
+	/// Bottom SafeAreaInsets을 반환하는 함수
+	private func getBottomSafeAreaInsets() -> CGFloat {
+		let bottomSafeArea: CGFloat = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
+		return bottomSafeArea
 	}
 }
