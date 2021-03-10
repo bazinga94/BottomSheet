@@ -308,7 +308,10 @@ public class BottomSheet: UIViewController {
 	// MARK: - return Bottom SafeAreaInsets
 	/// Bottom SafeAreaInsets을 반환하는 함수
 	private func getBottomSafeAreaInsets() -> CGFloat {
-		let bottomSafeArea: CGFloat = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
+		var bottomSafeArea: CGFloat = 0
+		if #available(iOS 11.0, *) {
+			bottomSafeArea = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
+		}
 		return bottomSafeArea
 	}
 }
