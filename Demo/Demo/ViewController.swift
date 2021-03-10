@@ -11,9 +11,12 @@ import UIKit
 class ViewController: UIViewController {
 
 	@IBAction func showBottomSheet(_ sender: Any) {
-		let vc = SheetViewController()
-		vc.view.backgroundColor = .red
-		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+//		let vc = SheetViewController()
+//		vc.view.backgroundColor = .red
+//		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
+		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SheetViewController
+		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -43,39 +46,13 @@ func getBottomSafeAreaInsets() -> CGFloat {
 
 
 // MARK: - ADAMBottomSheet의 dismiss로직을 수행하는 listener
-protocol DismissListenerDelegate: AnyObject {
+protocol BottomSheetDismissListenerDelegate: AnyObject {
 	func onDismiss()
 }
 
-class SheetViewController: UIViewController { }
-
-extension SheetViewController: UIGestureRecognizerDelegate {
-	// MARK: - UIGestureRecognizer가 동시에 발생할 때, 모두 허용 할지 판단
-	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-		//		if let tableView = bottomSheetTableView, tableView.contentOffset.y <= 0 { // 바텀시트 테이블 상단에서 스크롤시 dismiss
-		//			return true
-		//		}
-		//		if self.children.count != 0, let transferView = self.children[0] as? TransferViewController {	// Home의 이체 Modal
-		//			if let tableView = transferView.transferSearchViewController.bottomSheetTableView, tableView.contentOffset.y <= 0, !transferView.transferSearchContainerView.isHidden { // Modal 상단부분, 내부 테이블 뷰의 제스쳐 허용(테이블 상단에서 스크롤시 모달 dismiss)
-		//				return true
-		//			}
-		//		}
-		//		if let transferView = self as? TransferViewController, let tableView = transferView.transferSearchViewController.bottomSheetTableView {	// 조회의 이체 Modal
-		//			if tableView.contentOffset.y <= 0, !transferView.transferSearchContainerView.isHidden { // Modal 상단부분, 내부 테이블 뷰의 제스쳐 허용(테이블 상단에서 스크롤시 모달 dismiss)
-		//				return true
-		//			}
-		//		}
-		return false
-	}
-}
-
-extension SheetViewController: UIScrollViewDelegate {
-	// MARK: - 바텀시트의 tableview는 상단 bounce를 막는다
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-		//		if let tableView = bottomSheetTableView, tableView.contentOffset.y <= 0 {
-		//			tableView.contentOffset = CGPoint.zero // this is to disable tableview bouncing at top.
-		//		}
-	}
+class SheetViewController: UIViewController {
+	@IBOutlet weak var bottomSheetContentView: UIView!				// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
+	@IBOutlet weak var bottomSheetTableView: UITableView!			// 테이블뷰 상단 끝에서 스크롤이 발생할때 테이블뷰를 포함한 bottom sheet를 dismiss 시키기 위한 테이블뷰 outlet
 }
 
 class BottomSheet: UIViewController {
@@ -96,8 +73,7 @@ class BottomSheet: UIViewController {
 	var availablePanning: Bool = true						// panning 가능 여부
 	var isTapDismiss: Bool = true 							// 백그라운드 뷰 터치시 dismiss 되는지 여부
 	var showCompletion: CommonFuncType? 					// 바텀시트를 show 할때 수행 할 closure
-	var moreSheetHeight: CGFloat?							// view height 보다 sheetHeight가 클때 그 차이 값
-	weak var dismissListener: DismissListenerDelegate? 		// dismiss 되었을때 로직을 수행 할 handler
+	weak var dismissListener: BottomSheetDismissListenerDelegate? 		// dismiss 되었을때 로직을 수행 할 handler
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
 	enum ModalType {
@@ -118,7 +94,7 @@ class BottomSheet: UIViewController {
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: SheetViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil) {
+	init(childViewController: SheetViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -139,7 +115,7 @@ class BottomSheet: UIViewController {
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: SheetViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: DismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: SheetViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
@@ -225,13 +201,12 @@ class BottomSheet: UIViewController {
 	// MARK: - 바텀시트 높이가 유동적인 경우 높이를 계산한다
 	private func setupContainerHeight() {
 		if modalType == .flexible {		// TODO: 코드 수정이 필요
-			//			var contentViewHeight = childViewController.bottomSheetContentView?.frame.size.height ?? 0
+			var contentViewHeight = childViewController.bottomSheetContentView?.frame.size.height ?? 0
 			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
-			//			if contentViewHeight > maxHeight - 20 { // view 최대 높이보다 큰 경우, 최대높이 & scroll, image size : 20
-			//				moreSheetHeight = contentViewHeight - maxHeight
-			//				contentViewHeight = maxHeight - 20
-			//			}
-			//			sheetHeight = noAddBottomSafeArea ? contentViewHeight : contentViewHeight + getBottomSafeAreaInsets()
+			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우, 최대높이 & scroll, image size : 20
+				contentViewHeight = maxHeight
+			}
+			sheetHeight = noAddBottomSafeArea ? contentViewHeight : contentViewHeight + getBottomSafeAreaInsets()
 			heightConstraint.constant = sheetHeight
 		}
 	}
@@ -244,8 +219,8 @@ class BottomSheet: UIViewController {
 		}
 		if availablePanning {
 			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
-			containerViewGestureRecognizer.delegate = childViewController
-			containerView.addGestureRecognizer(containerViewGestureRecognizer) // bottom sheet 전체 영역 gesture 추가
+//			containerViewGestureRecognizer.delegate = childViewController		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
+			containerView.addGestureRecognizer(containerViewGestureRecognizer)	// bottom sheet 전체 영역 gesture 추가
 		}
 	}
 
