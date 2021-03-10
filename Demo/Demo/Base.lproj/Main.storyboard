@@ -16,17 +16,26 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X24-NV-Oqb">
-                                <rect key="frame" x="184" y="438" width="46" height="30"/>
-                                <state key="normal" title="Button"/>
+                                <rect key="frame" x="156" y="488" width="102" height="30"/>
+                                <state key="normal" title="Flexible Height"/>
                                 <connections>
-                                    <action selector="showBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7pZ-gV-R3t"/>
+                                    <action selector="showFlexibleBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ldd-6b-c4E"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ce4-GL-j40">
+                                <rect key="frame" x="164" y="388" width="86" height="30"/>
+                                <state key="normal" title="Fixed Height"/>
+                                <connections>
+                                    <action selector="showFixedBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1vV-gC-jPW"/>
                                 </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstItem="X24-NV-Oqb" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="Nuu-Ug-Kuf"/>
+                            <constraint firstItem="X24-NV-Oqb" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="50" id="Nuu-Ug-Kuf"/>
+                            <constraint firstItem="ce4-GL-j40" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="d9c-V5-yeh"/>
                             <constraint firstItem="X24-NV-Oqb" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="dXO-Ab-P09"/>
+                            <constraint firstItem="ce4-GL-j40" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="-50" id="fkG-mt-Kqd"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
@@ -35,10 +44,10 @@
             </objects>
             <point key="canvasLocation" x="133" y="139"/>
         </scene>
-        <!--Sheet View Controller-->
+        <!--Sample View Controller-->
         <scene sceneID="Khh-KU-xBj">
             <objects>
-                <viewController storyboardIdentifier="FlexibleSheet" id="vz8-Kv-17a" customClass="SheetViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="FlexibleSheet" id="vz8-Kv-17a" customClass="SampleViewController" customModule="Demo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="gps-yX-W92">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -70,7 +79,7 @@
                         <viewLayoutGuide key="safeArea" id="1eV-ip-5vl"/>
                     </view>
                     <connections>
-                        <outlet property="bottomSheetContentView" destination="zf7-mA-NCT" id="eYe-3N-zqh"/>
+                        <outlet property="bottomSheetContentView" destination="zf7-mA-NCT" id="GNc-2H-7Hl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BnQ-4r-XHr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

@@ -9,13 +9,16 @@
 import UIKit
 
 class ViewController: UIViewController {
+	@IBAction func showFixedBottomSheet(_ sender: Any) {
+		let vc = UIViewController()
+		vc.view.backgroundColor = .red
+		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+		bottomSheet.show(presentView: self)
+	}
 
-	@IBAction func showBottomSheet(_ sender: Any) {
-//		let vc = SheetViewController()
-//		vc.view.backgroundColor = .red
-//		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
-		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SheetViewController
+		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true)
 		bottomSheet.show(presentView: self)
 	}
@@ -50,16 +53,19 @@ protocol BottomSheetDismissListenerDelegate: AnyObject {
 	func onDismiss()
 }
 
-class SheetViewController: UIViewController {
-	@IBOutlet weak var bottomSheetContentView: UIView!				// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
-	@IBOutlet weak var bottomSheetTableView: UITableView!			// 테이블뷰 상단 끝에서 스크롤이 발생할때 테이블뷰를 포함한 bottom sheet를 dismiss 시키기 위한 테이블뷰 outlet
+protocol FlexibleBottomSheetDelegate: AnyObject {
+	var bottomSheetContentView: UIView! { get set }
+}
+
+class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
+	@IBOutlet weak var bottomSheetContentView: UIView!			// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
 }
 
 class BottomSheet: UIViewController {
 	enum Constant {
 		static let delay = 0.3
 	}
-	private var childViewController: SheetViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
+	private var childViewController: UIViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
 	private var dimColor: UIColor!							// 백그라운드 dim color
@@ -94,7 +100,7 @@ class BottomSheet: UIViewController {
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: SheetViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController, height: CGFloat, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -115,7 +121,7 @@ class BottomSheet: UIViewController {
 	///   - isInvestModal: 투자조회 modal에서 사용되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: SheetViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: UIViewController, dim: Bool, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
@@ -200,8 +206,8 @@ class BottomSheet: UIViewController {
 
 	// MARK: - 바텀시트 높이가 유동적인 경우 높이를 계산한다
 	private func setupContainerHeight() {
-		if modalType == .flexible {		// TODO: 코드 수정이 필요
-			var contentViewHeight = childViewController.bottomSheetContentView?.frame.size.height ?? 0
+		if modalType == .flexible, let flexibleBottomSheet = childViewController as? FlexibleBottomSheetDelegate {
+			var contentViewHeight = flexibleBottomSheet.bottomSheetContentView?.frame.size.height ?? 0
 			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
 			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우, 최대높이 & scroll, image size : 20
 				contentViewHeight = maxHeight
