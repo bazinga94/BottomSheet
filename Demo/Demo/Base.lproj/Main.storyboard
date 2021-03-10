@@ -53,7 +53,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zf7-mA-NCT">
-                                <rect key="frame" x="0.0" y="44" width="414" height="221"/>
+                                <rect key="frame" x="0.0" y="44" width="414" height="321"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Flexible Bottom Sheet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cg1-f4-TXs">
                                         <rect key="frame" x="123" y="100" width="168" height="21"/>
@@ -62,10 +62,10 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="100" id="T82-yk-Vep"/>
-                                    <constraint firstAttribute="bottom" secondItem="cg1-f4-TXs" secondAttribute="bottom" constant="100" id="bU2-0T-Any"/>
+                                    <constraint firstAttribute="bottom" secondItem="cg1-f4-TXs" secondAttribute="bottom" constant="200" id="bU2-0T-Any"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="centerX" secondItem="zf7-mA-NCT" secondAttribute="centerX" id="dnf-T5-r4V"/>
                                 </constraints>
                             </view>

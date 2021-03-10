@@ -19,7 +19,7 @@ class ViewController: UIViewController {
 	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SampleViewController
-		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true)
+		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -43,7 +43,9 @@ class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
 
 class BottomSheet: UIViewController {
 	enum Constant {
-		static let delay = 0.3
+		static let delay: Double = 0.3
+		static let maxDimAlpha: CGFloat = 0.5
+		static let flickingVelocity: CGFloat = 2000
 	}
 	private var childViewController: UIViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
@@ -85,7 +87,7 @@ class BottomSheet: UIViewController {
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
 		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: 0.5) : UIColor.clear
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
 		self.dismissListener = dismissListener
@@ -105,7 +107,7 @@ class BottomSheet: UIViewController {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: 0.5) : UIColor.clear
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
 		self.dismissListener = dismissListener
@@ -282,9 +284,9 @@ class BottomSheet: UIViewController {
 			dismissSheet()
 		} else if gesture.state == .ended { // gesture가 종료된 경우
 			let velocity = gesture.velocity(in: self.view).y // 종료 시 panning 속도 확인
-			if velocity > 2000 { // flicking이 아래로 발생한 경우
+			if velocity > Constant.flickingVelocity { // flicking이 아래로 발생한 경우
 				dismissSheet()
-			} else if velocity < -1000 { // flicking이 위로 발생한 경우
+			} else if velocity < -Constant.flickingVelocity { // flicking이 위로 발생한 경우
 				sheetAppearAnimation()
 			} else if newHeight <= maxHeight/2 { // 절반 이상 panning된 경우
 				dismissSheet()
@@ -293,7 +295,7 @@ class BottomSheet: UIViewController {
 			}
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
-			self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: 0.5 * (newHeight/maxHeight)) : UIColor.clear
+			self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight)) : UIColor.clear
 		}
 	}
 
@@ -305,7 +307,7 @@ class BottomSheet: UIViewController {
 			dismissSheet()
 		} else if gesture.state == .ended { // gesture가 종료된 경우
 			let velocity = gesture.velocity(in: self.view).y // 종료 시 panning 속도 확인
-			if isKeyboardShow && velocity > 3000 {
+			if isKeyboardShow && velocity > Constant.flickingVelocity {
 				dismissSheet()
 				isKeyboardShow = false
 				return
