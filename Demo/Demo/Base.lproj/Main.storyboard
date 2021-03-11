@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15705" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15706"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -61,12 +61,26 @@
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Inw-tb-Js7">
+                                        <rect key="frame" x="369" y="21" width="25" height="22.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="25" id="jLp-jz-sNu"/>
+                                            <constraint firstAttribute="width" constant="25" id="ywB-uo-B5F"/>
+                                        </constraints>
+                                        <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <state key="normal" backgroundImage="clear" catalog="system"/>
+                                        <connections>
+                                            <action selector="closeBottomSheet:" destination="vz8-Kv-17a" eventType="touchUpInside" id="t2s-P9-b2H"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
+                                    <constraint firstItem="Inw-tb-Js7" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="20" id="1qp-6Q-aRo"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="100" id="T82-yk-Vep"/>
                                     <constraint firstAttribute="bottom" secondItem="cg1-f4-TXs" secondAttribute="bottom" constant="200" id="bU2-0T-Any"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="centerX" secondItem="zf7-mA-NCT" secondAttribute="centerX" id="dnf-T5-r4V"/>
+                                    <constraint firstAttribute="trailing" secondItem="Inw-tb-Js7" secondAttribute="trailing" constant="20" id="qI7-SA-plO"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -87,4 +101,7 @@
             <point key="canvasLocation" x="896" y="139"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="clear" catalog="system" width="64" height="56"/>
+    </resources>
 </document>

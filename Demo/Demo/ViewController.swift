@@ -28,6 +28,13 @@ class ViewController: UIViewController {
 	}
 }
 
+class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
+	@IBOutlet weak var bottomSheetContentView: UIView!		// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
+	@IBAction func closeBottomSheet(_ sender: Any) {
+		bottomSheet?.dismissSheet()
+	}
+}
+
 // MARK: - BottomSheet dismiss listener
 protocol BottomSheetDismissListenerDelegate: AnyObject {
 	func onDismiss()
@@ -37,8 +44,28 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
-	@IBOutlet weak var bottomSheetContentView: UIView!		// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
+extension UIViewController {
+	var bottomSheet: BottomSheet? {
+		if var topController = getKeyWindow()?.rootViewController {
+			while let presentedViewController = topController.presentedViewController {
+				topController = presentedViewController
+			}
+			guard let bottomSheet = topController as? BottomSheet else { return nil }
+			return bottomSheet
+		}
+		return nil
+	}
+
+	// MARK: - return KeyWindow
+	func getKeyWindow() -> UIWindow? {
+		var window: UIWindow?
+		if #available(iOS 13.0, *) {
+			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+		} else {
+			window = UIApplication.shared.keyWindow
+		}
+		return window
+	}
 }
 
 class BottomSheet: UIViewController {
@@ -314,17 +341,6 @@ class BottomSheet: UIViewController {
 				return
 			}
 		}
-	}
-
-	// MARK: - return KeyWindow
-	private func getKeyWindow() -> UIWindow? {
-		var window: UIWindow?
-		if #available(iOS 13.0, *) {
-			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-		} else {
-			window = UIApplication.shared.keyWindow
-		}
-		return window
 	}
 
 	// MARK: - return Bottom SafeAreaInsets
