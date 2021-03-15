@@ -218,7 +218,13 @@ class BottomSheet: UIViewController {
 	private func setupContainerHeight() {
 		if modalType == .flexible, let flexibleBottomSheet = childViewController as? FlexibleBottomSheetDelegate {
 			var contentViewHeight = flexibleBottomSheet.bottomSheetContentView?.frame.size.height ?? 0
-			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
+			var statusBarHeight: CGFloat = 0.0
+			if #available(iOS 13.0, *) {
+				statusBarHeight = getKeyWindow()?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+			} else {
+				statusBarHeight = UIApplication.shared.statusBarFrame.height
+			}
+			let maxHeight = self.view.bounds.height - statusBarHeight
 			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우
 				contentViewHeight = maxHeight
 			}
