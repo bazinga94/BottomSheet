@@ -34,21 +34,23 @@ public class BottomSheet: UIViewController {
 	private var dim: Bool = true							// 백그라운드 dim 여부
 	private var noAddBottomSafeArea: Bool = false			// 바텀시트 높이 계산시, bottomSafeArea를 고려하지 않습니다.
 	private var isTapDismiss: Bool = true 					// 백그라운드 뷰 터치시 dismiss 되는지 여부
+	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
 	private var modalType: ModalType = .fixed 				// 공통가이드의 Modal Type 구분
-	private weak var dismissListener: BottomSheetDismissListenerDelegate? 			// dismiss 되었을때 로직을 수행 할 handler
 	// MARK: - Public variable
-	public var sheetHeight: CGFloat = 0						// 바텀시트 높이
+	public var sheetHeight: CGFloat = 0							// 바텀시트 높이
+	public var maxChangeableHeight: CGFloat = 0					// 최대 확장 바텀시트 높이
 	public var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 top constraint
 	public var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	public var isKeyboardShow: Bool = false 				// 키보드가 등장한 상태인지 확인
 	public var availablePanning: Bool = true				// panning 가능 여부
-	public var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
+	weak var dismissListener: BottomSheetDismissListenerDelegate? 	// dismiss 되었을때 로직을 수행 할 handler
 
 	public typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
 	enum ModalType {
 		case fixed 		// Modal 높이 고정
 		case flexible 	// Modal 높이 유동적(bottomSheetContentView의 높이)
+		case changeable	// Modal 높이 고정 + flicking으로 높이 변화 가능
 	}
 
 	public required init?(coder aDecoder: NSCoder) {
@@ -96,6 +98,30 @@ public class BottomSheet: UIViewController {
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .flexible
 		self.noAddBottomSafeArea = noAddBottomSafeArea
+	}
+
+	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션)
+	/// - Parameters:
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
+	///   - height: bottom sheet 높이
+	///   - dim: background dim 처리 확인
+	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
+	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
+	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
+	/// 파라미터 수정 필요
+	public init(childViewController: UIViewController, initailHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+		super.init(nibName: nil, bundle: nil)
+		self.childViewController = childViewController
+		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
+		self.sheetHeight = initailHeight + bottomSafeAreaInsets
+		self.maxChangeableHeight = maxHeight + bottomSafeAreaInsets
+		self.dim = dim
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+		self.isTapDismiss = isTapDismiss
+		self.availablePanning = availablePanning
+		self.dismissListener = dismissListener
+		self.modalPresentationStyle = .overFullScreen
+		self.modalType = .changeable
 	}
 
 	// MARK: - bottom sheet view의 container view 와 child view controller의 view UI를 setting
@@ -169,7 +195,13 @@ public class BottomSheet: UIViewController {
 	private func setupContainerHeight() {
 		if modalType == .flexible, let flexibleBottomSheet = childViewController as? FlexibleBottomSheetDelegate {
 			var contentViewHeight = flexibleBottomSheet.bottomSheetContentView?.frame.size.height ?? 0
-			let maxHeight = self.view.bounds.height - UIApplication.shared.statusBarFrame.height
+			var statusBarHeight: CGFloat = 0.0
+			if #available(iOS 13.0, *) {
+				statusBarHeight = getKeyWindow()?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+			} else {
+				statusBarHeight = UIApplication.shared.statusBarFrame.height
+			}
+			let maxHeight = self.view.bounds.height - statusBarHeight
 			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우
 				contentViewHeight = maxHeight
 			}
@@ -221,7 +253,7 @@ public class BottomSheet: UIViewController {
 			self.view.backgroundColor = UIColor.clear
 		}, completion: { _ in
 			self.dismiss(animated: false) {
-				guard let completion = completion else { // completion 함수가 없으면 dismiss listener의 onDismiss 로직 수행
+				guard let completion = completion else { // completion 함수가 없으면 dismiss listener의 afterDismiss 로직 수행
 					self.dismissListener?.afterDismiss()
 					return
 				}
@@ -266,7 +298,7 @@ public class BottomSheet: UIViewController {
 			if velocity > Constant.flickingVelocity { // flicking이 아래로 발생한 경우
 				dismissSheet()
 			} else if velocity < -Constant.flickingVelocity { // flicking이 위로 발생한 경우
-				sheetAppearAnimation()
+				(modalType == .changeable) ? resizeSheet(height: self.maxChangeableHeight) : sheetAppearAnimation()
 			} else if newHeight <= maxHeight/2 { // 절반 이상 panning된 경우
 				dismissSheet()
 			} else { // 절반 이하로 panning된 경우

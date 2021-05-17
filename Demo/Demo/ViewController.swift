@@ -12,7 +12,8 @@ class ViewController: UIViewController {
 	@IBAction func showFixedBottomSheet(_ sender: Any) {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
-		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+//		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+		let bottomSheet = BottomSheet.init(childViewController: vc, initailHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -86,6 +87,7 @@ class BottomSheet: UIViewController {
 	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
 	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
+	var maxChangeableHeight: CGFloat = 0					// 최대 확장 바텀시트 높이
 	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
@@ -98,6 +100,7 @@ class BottomSheet: UIViewController {
 	enum ModalType {
 		case fixed 		// Modal 높이 고정
 		case flexible 	// Modal 높이 유동적(bottomSheetContentView의 높이)
+		case changeable	// Modal 높이 고정 + flicking으로 높이 변화 가능
 	}
 
 	required init?(coder aDecoder: NSCoder) {
@@ -145,6 +148,30 @@ class BottomSheet: UIViewController {
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .flexible
 		self.noAddBottomSafeArea = noAddBottomSafeArea
+	}
+
+	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션)
+	/// - Parameters:
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
+	///   - height: bottom sheet 높이
+	///   - dim: background dim 처리 확인
+	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
+	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
+	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
+	/// 파라미터 수정 필요
+	init(childViewController: UIViewController, initailHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+		super.init(nibName: nil, bundle: nil)
+		self.childViewController = childViewController
+		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
+		self.sheetHeight = initailHeight + bottomSafeAreaInsets
+		self.maxChangeableHeight = maxHeight + bottomSafeAreaInsets
+		self.dim = dim
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+		self.isTapDismiss = isTapDismiss
+		self.availablePanning = availablePanning
+		self.dismissListener = dismissListener
+		self.modalPresentationStyle = .overFullScreen
+		self.modalType = .changeable
 	}
 
 	// MARK: - bottom sheet view의 container view 와 child view controller의 view UI를 setting
@@ -321,7 +348,7 @@ class BottomSheet: UIViewController {
 			if velocity > Constant.flickingVelocity { // flicking이 아래로 발생한 경우
 				dismissSheet()
 			} else if velocity < -Constant.flickingVelocity { // flicking이 위로 발생한 경우
-				sheetAppearAnimation()
+				(modalType == .changeable) ? resizeSheet(height: self.maxChangeableHeight) : sheetAppearAnimation()
 			} else if newHeight <= maxHeight/2 { // 절반 이상 panning된 경우
 				dismissSheet()
 			} else { // 절반 이하로 panning된 경우
