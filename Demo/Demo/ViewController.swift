@@ -379,7 +379,7 @@ class BottomSheet: UIViewController {
 
 	// MARK: 키보드가 발생한 경우 pan gesture 로직 구현
 	private func keyboardPanGesture(_ gesture: UIPanGestureRecognizer) {
-		if gesture.state == .began {	// 이체 "받는사람" 바텀시트에서만 panning이 발생할때 키보드를 내려주자
+		if gesture.state == .began {	// 특정 바텀시트에서만 panning이 발생할때 키보드를 내려주자
 			self.view.endEditing(true)
 		} else if gesture.state == .cancelled || gesture.state == .failed { // gesture가 중간에 중단되거나 recognizer가 일치 하지 않는 경우
 			dismissSheet()
