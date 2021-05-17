@@ -12,8 +12,7 @@ class ViewController: UIViewController {
 	@IBAction func showFixedBottomSheet(_ sender: Any) {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
-//		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
-		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
+		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -21,6 +20,13 @@ class ViewController: UIViewController {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
+		bottomSheet.show(presentView: self)
+	}
+
+	@IBAction func showChangeableBottomSheet(_ sender: Any) {
+		let vc = UIViewController()
+		vc.view.backgroundColor = .red
+		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
 		bottomSheet.show(presentView: self)
 	}
 

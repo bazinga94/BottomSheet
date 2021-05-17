@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -16,29 +17,38 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X24-NV-Oqb">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X24-NV-Oqb">
                                 <rect key="frame" x="156" y="488" width="102" height="30"/>
                                 <state key="normal" title="Flexible Height"/>
                                 <connections>
                                     <action selector="showFlexibleBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ldd-6b-c4E"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ce4-GL-j40">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ce4-GL-j40">
                                 <rect key="frame" x="164" y="388" width="86" height="30"/>
                                 <state key="normal" title="Fixed Height"/>
                                 <connections>
                                     <action selector="showFixedBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1vV-gC-jPW"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zcB-r7-l1S">
+                                <rect key="frame" x="141" y="298" width="132" height="30"/>
+                                <state key="normal" title="Changeable Height"/>
+                                <connections>
+                                    <action selector="showChangeableBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P40-Jw-NQJ"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="ce4-GL-j40" firstAttribute="top" secondItem="zcB-r7-l1S" secondAttribute="bottom" constant="60" id="2eq-RW-cOK"/>
                             <constraint firstItem="X24-NV-Oqb" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="50" id="Nuu-Ug-Kuf"/>
                             <constraint firstItem="ce4-GL-j40" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="d9c-V5-yeh"/>
                             <constraint firstItem="X24-NV-Oqb" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="dXO-Ab-P09"/>
                             <constraint firstItem="ce4-GL-j40" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" constant="-50" id="fkG-mt-Kqd"/>
+                            <constraint firstItem="zcB-r7-l1S" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="o01-fo-W4g"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -57,7 +67,7 @@
                                 <rect key="frame" x="0.0" y="44" width="414" height="321"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Flexible Bottom Sheet" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cg1-f4-TXs">
-                                        <rect key="frame" x="123" y="100" width="168" height="21"/>
+                                        <rect key="frame" x="124" y="100" width="166.5" height="21"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -75,7 +85,7 @@
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" systemColor="systemBlueColor"/>
                                 <constraints>
                                     <constraint firstItem="Inw-tb-Js7" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="20" id="1qp-6Q-aRo"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="100" id="T82-yk-Vep"/>
@@ -85,13 +95,13 @@
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="1eV-ip-5vl"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="zf7-mA-NCT" firstAttribute="top" secondItem="1eV-ip-5vl" secondAttribute="top" id="GP1-ul-uww"/>
                             <constraint firstItem="zf7-mA-NCT" firstAttribute="leading" secondItem="1eV-ip-5vl" secondAttribute="leading" id="gKF-2O-jSl"/>
                             <constraint firstItem="1eV-ip-5vl" firstAttribute="trailing" secondItem="zf7-mA-NCT" secondAttribute="trailing" id="vZf-J1-Ix6"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="1eV-ip-5vl"/>
                     </view>
                     <connections>
                         <outlet property="bottomSheetContentView" destination="zf7-mA-NCT" id="GNc-2H-7Hl"/>
@@ -104,5 +114,11 @@
     </scenes>
     <resources>
         <image name="clear" catalog="system" width="128" height="114"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBlueColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>
