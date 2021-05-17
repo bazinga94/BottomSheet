@@ -13,7 +13,7 @@ class ViewController: UIViewController {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
 //		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
-		let bottomSheet = BottomSheet.init(childViewController: vc, initailHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
+		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -87,7 +87,7 @@ class BottomSheet: UIViewController {
 	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
 	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
-	var maxChangeableHeight: CGFloat = 0					// 최대 확장 바텀시트 높이
+	var initialHeight: CGFloat = 0							// 확장 바텀시트의 최초 높이
 	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
@@ -119,6 +119,7 @@ class BottomSheet: UIViewController {
 	init(childViewController: UIViewController, height: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
+		self.initialHeight = height + getBottomSafeAreaInsets()
 		self.sheetHeight = height + getBottomSafeAreaInsets()
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
@@ -159,12 +160,12 @@ class BottomSheet: UIViewController {
 	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	/// 파라미터 수정 필요
-	init(childViewController: UIViewController, initailHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
-		self.sheetHeight = initailHeight + bottomSafeAreaInsets
-		self.maxChangeableHeight = maxHeight + bottomSafeAreaInsets
+		self.sheetHeight = maxHeight + bottomSafeAreaInsets
+		self.initialHeight = initialHeight + bottomSafeAreaInsets
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
@@ -195,7 +196,7 @@ class BottomSheet: UIViewController {
 	/// bottom sheet 등장 애니메이션
 	/// - Parameter completion: show complete closure
 	private func sheetAppearAnimation(completion: CommonFuncType? = nil) {
-		topConstraint.constant = -self.sheetHeight
+		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			// 호출 Interaction: 올라올 때 빠르게 시작해서 점점 속도가 주는 형태
 			self.view.backgroundColor = self.dimColor
@@ -333,7 +334,7 @@ class BottomSheet: UIViewController {
 		let point = gesture.translation(in: gesture.view) // panning위치
 
 		let maxHeight = sheetHeight
-		var newHeight = sheetHeight - point.y // 실시간으로 변하는 bottom sheet 높이
+		var newHeight = (modalType == .changeable) ? initialHeight - point.y : sheetHeight - point.y // 실시간으로 변하는 bottom sheet 높이
 
 		if newHeight > maxHeight {
 			newHeight = maxHeight
@@ -348,15 +349,24 @@ class BottomSheet: UIViewController {
 			if velocity > Constant.flickingVelocity { // flicking이 아래로 발생한 경우
 				dismissSheet()
 			} else if velocity < -Constant.flickingVelocity { // flicking이 위로 발생한 경우
-				(modalType == .changeable) ? resizeSheet(height: self.maxChangeableHeight) : sheetAppearAnimation()
-			} else if newHeight <= maxHeight/2 { // 절반 이상 panning된 경우
+				(modalType == .changeable) ? resizeSheet(height: self.sheetHeight) : sheetAppearAnimation()
+			} else if newHeight <= initialHeight/2 { // 절반 이상 panning된 경우
 				dismissSheet()
+			} else if newHeight > initialHeight {
+				resizeSheet(height: self.sheetHeight)
+				self.initialHeight = self.sheetHeight
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
-			self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight)) : UIColor.clear
+			if modalType == .changeable, newHeight >= initialHeight {
+				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+			} else if modalType == .changeable, newHeight < initialHeight {
+				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight)) : UIColor.clear
+			} else {
+				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight)) : UIColor.clear
+			}
 		}
 	}
 
