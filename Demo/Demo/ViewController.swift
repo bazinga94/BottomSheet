@@ -125,7 +125,6 @@ class BottomSheet: UIViewController {
 	init(childViewController: UIViewController, height: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
-		self.initialHeight = height + getBottomSafeAreaInsets()
 		self.sheetHeight = height + getBottomSafeAreaInsets()
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
@@ -366,12 +365,14 @@ class BottomSheet: UIViewController {
 			}
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
-			if modalType == .changeable, newHeight >= initialHeight {
-				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-			} else if modalType == .changeable, newHeight < initialHeight {
-				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight)) : UIColor.clear
-			} else {
-				self.view.backgroundColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight)) : UIColor.clear
+			if !dim {	// dim 처리 X
+				self.view.backgroundColor = .clear
+			} else if modalType == .changeable, newHeight >= initialHeight {	// mode changeable, panning 한 높이가 초기 높이보다 높은 경우
+				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
+			} else if modalType == .changeable, newHeight < initialHeight {		// mode changeable, panning 한 높이가 초기보다 낮은 경우
+				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight))
+			} else {	// mode fixed, flexible
+				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight))
 			}
 		}
 	}
