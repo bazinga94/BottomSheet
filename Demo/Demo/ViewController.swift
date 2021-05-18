@@ -26,7 +26,7 @@ class ViewController: UIViewController {
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
-		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, availablePanning: true, dismissListener: nil)
+		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, dismissListener: nil)
 		bottomSheet.show(presentView: self)
 	}
 
@@ -165,7 +165,7 @@ class BottomSheet: UIViewController {
 	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	/// 파라미터 수정 필요
-	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
@@ -174,7 +174,7 @@ class BottomSheet: UIViewController {
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
-		self.availablePanning = availablePanning
+		self.availablePanning = true
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
