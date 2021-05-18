@@ -18,14 +18,14 @@ class ViewController: UIViewController {
 
 	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
-		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! SampleViewController
+		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
 		bottomSheet.show(presentView: self)
 	}
 
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {
-		let vc = UIViewController()
-		vc.view.backgroundColor = .red
+		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
+		let vc = storyBoard.instantiateViewController(withIdentifier: "TableViewSheet") as! TableViewSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, dismissListener: nil)
 		bottomSheet.show(presentView: self)
 	}
@@ -35,10 +35,30 @@ class ViewController: UIViewController {
 	}
 }
 
-class SampleViewController: UIViewController, FlexibleBottomSheetDelegate {
+class FlexibleSampleViewController: UIViewController, FlexibleBottomSheetDelegate {
 	@IBOutlet weak var bottomSheetContentView: UIView!		// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
 	@IBAction func closeBottomSheet(_ sender: Any) {
 		bottomSheet?.dismissSheet()
+	}
+}
+
+class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+	@IBOutlet weak var tableView: UITableView!
+
+	override func viewDidLoad() {
+		super.viewDidLoad()
+		tableView.delegate = self
+		tableView.dataSource = self
+	}
+
+	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+		return 10
+	}
+
+	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+		let cell = tableView.dequeueReusableCell(withIdentifier: "SampleTableViewCell", for: indexPath) as! SampleTableViewCell
+		cell.indexLabel.text = String(indexPath.row)
+		return cell
 	}
 }
 

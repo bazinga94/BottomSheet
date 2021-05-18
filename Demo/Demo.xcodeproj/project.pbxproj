@@ -12,6 +12,7 @@
 		B25B7E1D25F0ADDE00BA31C1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E1B25F0ADDE00BA31C1 /* Main.storyboard */; };
 		B25B7E1F25F0ADE100BA31C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E1E25F0ADE100BA31C1 /* Assets.xcassets */; };
 		B25B7E2225F0ADE100BA31C1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E2025F0ADE100BA31C1 /* LaunchScreen.storyboard */; };
+		B278BFD9265381E000F79CFD /* SampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +23,7 @@
 		B25B7E1E25F0ADE100BA31C1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B25B7E2125F0ADE100BA31C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B25B7E2325F0ADE100BA31C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +58,7 @@
 			children = (
 				B25B7E1525F0ADDE00BA31C1 /* AppDelegate.swift */,
 				B25B7E1925F0ADDE00BA31C1 /* ViewController.swift */,
+				B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */,
 				B25B7E1B25F0ADDE00BA31C1 /* Main.storyboard */,
 				B25B7E1E25F0ADE100BA31C1 /* Assets.xcassets */,
 				B25B7E2025F0ADE100BA31C1 /* LaunchScreen.storyboard */,
@@ -136,6 +139,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B25B7E1A25F0ADDE00BA31C1 /* ViewController.swift in Sources */,
+				B278BFD9265381E000F79CFD /* SampleTableViewCell.swift in Sources */,
 				B25B7E1625F0ADDE00BA31C1 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
