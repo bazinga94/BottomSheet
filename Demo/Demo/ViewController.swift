@@ -35,33 +35,6 @@ class ViewController: UIViewController {
 	}
 }
 
-class FlexibleSampleViewController: UIViewController, FlexibleBottomSheetDelegate {
-	@IBOutlet weak var bottomSheetContentView: UIView!		// 바텀시트(BottomSheet)의 높이를 유동적으로 관리하고 싶을때 생성하여 outlet 연결 필요
-	@IBAction func closeBottomSheet(_ sender: Any) {
-		bottomSheet?.dismissSheet()
-	}
-}
-
-class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-	@IBOutlet weak var tableView: UITableView!
-
-	override func viewDidLoad() {
-		super.viewDidLoad()
-		tableView.delegate = self
-		tableView.dataSource = self
-	}
-
-	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-		return 10
-	}
-
-	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-		let cell = tableView.dequeueReusableCell(withIdentifier: "SampleTableViewCell", for: indexPath) as! SampleTableViewCell
-		cell.indexLabel.text = String(indexPath.row)
-		return cell
-	}
-}
-
 // MARK: - BottomSheet dismiss listener
 protocol BottomSheetDismissListenerDelegate: AnyObject {
 	func afterDismiss()

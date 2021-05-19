@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		43702257265557600050EC77 /* FlexibleSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43702256265557600050EC77 /* FlexibleSampleViewController.swift */; };
+		4370225A2655577E0050EC77 /* TableViewSampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 437022592655577E0050EC77 /* TableViewSampleViewController.swift */; };
 		B25B7E1625F0ADDE00BA31C1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25B7E1525F0ADDE00BA31C1 /* AppDelegate.swift */; };
 		B25B7E1A25F0ADDE00BA31C1 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25B7E1925F0ADDE00BA31C1 /* ViewController.swift */; };
 		B25B7E1D25F0ADDE00BA31C1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E1B25F0ADDE00BA31C1 /* Main.storyboard */; };
@@ -16,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		43702256265557600050EC77 /* FlexibleSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleSampleViewController.swift; sourceTree = "<group>"; };
+		437022592655577E0050EC77 /* TableViewSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewSampleViewController.swift; sourceTree = "<group>"; };
 		B25B7E1225F0ADDE00BA31C1 /* Demo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Demo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B25B7E1525F0ADDE00BA31C1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B25B7E1925F0ADDE00BA31C1 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -58,6 +62,8 @@
 			children = (
 				B25B7E1525F0ADDE00BA31C1 /* AppDelegate.swift */,
 				B25B7E1925F0ADDE00BA31C1 /* ViewController.swift */,
+				43702256265557600050EC77 /* FlexibleSampleViewController.swift */,
+				437022592655577E0050EC77 /* TableViewSampleViewController.swift */,
 				B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */,
 				B25B7E1B25F0ADDE00BA31C1 /* Main.storyboard */,
 				B25B7E1E25F0ADE100BA31C1 /* Assets.xcassets */,
@@ -139,6 +145,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B25B7E1A25F0ADDE00BA31C1 /* ViewController.swift in Sources */,
+				43702257265557600050EC77 /* FlexibleSampleViewController.swift in Sources */,
+				4370225A2655577E0050EC77 /* TableViewSampleViewController.swift in Sources */,
 				B278BFD9265381E000F79CFD /* SampleTableViewCell.swift in Sources */,
 				B25B7E1625F0ADDE00BA31C1 /* AppDelegate.swift in Sources */,
 			);
