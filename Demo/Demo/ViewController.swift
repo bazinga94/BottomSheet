@@ -87,6 +87,7 @@ class BottomSheet: UIViewController {
 	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
 	var initialHeight: CGFloat = 0							// 확장 바텀시트의 최초 높이
+	var isExpand: Bool = false								// 바텀시트 확장 여부
 	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
@@ -152,13 +153,35 @@ class BottomSheet: UIViewController {
 	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션)
 	/// - Parameters:
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
-	///   - height: bottom sheet 높이
+	///   - initialHeight: bottom sheet 초기 높이
+	///   - maxHeight: bottom sheet 최대 높이
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	/// 파라미터 수정 필요
 	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+		super.init(nibName: nil, bundle: nil)
+		self.childViewController = childViewController
+		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
+		self.sheetHeight = maxHeight + bottomSafeAreaInsets
+		self.initialHeight = initialHeight + bottomSafeAreaInsets
+		self.dim = dim
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+		self.isTapDismiss = isTapDismiss
+		self.availablePanning = true
+		self.dismissListener = dismissListener
+		self.modalPresentationStyle = .overFullScreen
+		self.modalType = .changeable
+	}
+
+	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션) + scroll view가 childViewController에 있는 경우
+	/// - Parameters:
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
+	///   - initialHeight: bottom sheet 초기 높이
+	///   - maxHeight: bottom sheet 최대 높이
+	///   - dim: background dim 처리 확인
+	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
+	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
+	init(childViewController: UIViewController & UIGestureRecognizerDelegate, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
@@ -267,7 +290,9 @@ class BottomSheet: UIViewController {
 		}
 		if availablePanning {
 			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
-//			containerViewGestureRecognizer.delegate = childViewController		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
+			if let childVC = childViewController as? UIGestureRecognizerDelegate {
+				containerViewGestureRecognizer.delegate = childVC		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
+			}
 			containerView.addGestureRecognizer(containerViewGestureRecognizer)	// bottom sheet 전체 영역 gesture 추가
 		}
 	}
@@ -317,6 +342,7 @@ class BottomSheet: UIViewController {
 		topConstraint.constant = -height
 		heightConstraint.constant = height
 		sheetHeight = height
+		isExpand = true
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			self.view.layoutIfNeeded()
 		})

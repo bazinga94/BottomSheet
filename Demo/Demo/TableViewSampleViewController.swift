@@ -27,3 +27,14 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 		return cell
 	}
 }
+
+extension TableViewSampleViewController: UIGestureRecognizerDelegate {
+	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
+		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+			return false
+		} else {
+			return true
+		}
+	}
+}
