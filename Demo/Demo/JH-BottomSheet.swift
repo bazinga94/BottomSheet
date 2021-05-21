@@ -41,6 +41,10 @@ extension UIViewController {
 	}
 }
 
+class BottomSheetPanGestureRecognizer: UIPanGestureRecognizer {
+	var isExpand: Bool = false
+}
+
 class BottomSheet: UIViewController {
 	// MARK: - Constant
 	enum Constant {
@@ -57,10 +61,11 @@ class BottomSheet: UIViewController {
 	private var noAddBottomSafeArea: Bool = false			// 바텀시트 높이 계산시, bottomSafeArea를 고려하지 않습니다.
 	private var isTapDismiss: Bool = true 					// 백그라운드 뷰 터치시 dismiss 되는지 여부
 	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
+	private var bottomSheetPanGestureRecognizer :BottomSheetPanGestureRecognizer?
 	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
 	var initialHeight: CGFloat = 0							// 확장 바텀시트의 최초 높이
-	var isExpand: Bool = false								// 바텀시트 확장 여부
+//	var isExpand: Bool = false								// 바텀시트 확장 여부
 	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
@@ -262,11 +267,12 @@ class BottomSheet: UIViewController {
 			backgroundView.addGestureRecognizer(tapGestureRecognizer) // background tap gesture 등록
 		}
 		if availablePanning {
-			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
-			if let childVC = childViewController as? UIGestureRecognizerDelegate {
-				containerViewGestureRecognizer.delegate = childVC		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
-			}
-			containerView.addGestureRecognizer(containerViewGestureRecognizer)	// bottom sheet 전체 영역 gesture 추가
+//			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
+			bottomSheetPanGestureRecognizer = BottomSheetPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
+//			if let childVC = childViewController as? UIGestureRecognizerDelegate {
+//				containerViewGestureRecognizer.delegate = childVC		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
+//			}
+			containerView.addGestureRecognizer(bottomSheetPanGestureRecognizer!)	// bottom sheet 전체 영역 gesture 추가
 		}
 	}
 
@@ -315,7 +321,7 @@ class BottomSheet: UIViewController {
 		topConstraint.constant = -height
 		heightConstraint.constant = height
 		sheetHeight = height
-		isExpand = true
+		bottomSheetPanGestureRecognizer?.isExpand = true
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			self.view.layoutIfNeeded()
 		})

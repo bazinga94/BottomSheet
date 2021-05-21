@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, BottomSheetScrollViewPannable {
 	@IBOutlet weak var tableView: UITableView!
 
 	override func viewDidLoad() {
@@ -28,10 +28,32 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 	}
 }
 
-extension TableViewSampleViewController: UIGestureRecognizerDelegate {
+//extension TableViewSampleViewController: ChangeableBottomSheetScrollable {
+//
+//}
+
+//extension TableViewSampleViewController: UIGestureRecognizerDelegate {
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+//			return false
+//		} else {
+//			return true
+//		}
+//	}
+//}
+
+//class ChangeableScrollViewController: NSObject, UIGestureRecognizerDelegate {
+//
+//}
+
+protocol BottomSheetScrollViewPannable: class, UIGestureRecognizerDelegate {
+}
+
+extension BottomSheetScrollViewPannable where Self: NSObject {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
-		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+		if let gestureRecognizer = gestureRecognizer as? BottomSheetPanGestureRecognizer, gestureRecognizer.isExpand {
 			return false
 		} else {
 			return true
