@@ -44,7 +44,6 @@ extension TableViewSampleViewController: UIScrollViewDelegate {
 
 		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
 			tableView.setContentOffset(.zero, animated: false)
-			print(tableView.contentOffset)
 		}
 	}
 }
