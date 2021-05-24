@@ -17,100 +17,33 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-protocol ChangeableBottomSheetWithScrollView: AnyObject {
-	var scrollView: UIScrollView! { get set }
+@objc protocol ChangeableBottomSheetWithScrollView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+	@objc optional var scrollView: UIScrollView! { get set }
+	@objc optional var tableView: UITableView! { get set }
 }
 
-//protocol ChangeableBottomSheetWithTableView: AnyObject {
-//	var tableView: UITableView! { get set }
-//}
+extension UIViewController {
+	var bottomSheet: BottomSheet? {
+		if var topController = getKeyWindow()?.rootViewController {
+			while let presentedViewController = topController.presentedViewController {
+				topController = presentedViewController
+			}
+			guard let bottomSheet = topController as? BottomSheet else { return nil }
+			return bottomSheet
+		}
+		return nil
+	}
 
-protocol ChangeableBottomSheetWithTableView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
-	var tableView: UITableView! { get set }
-}
-
-extension ChangeableBottomSheetWithTableView {
-	public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-
-		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
-			return false
+	// MARK: - return KeyWindow
+	func getKeyWindow() -> UIWindow? {
+		var window: UIWindow?
+		if #available(iOS 13.0, *) {
+			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
 		} else {
-			return true
+			window = UIApplication.shared.keyWindow
 		}
+		return window
 	}
-
-	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-
-		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
-			scrollView.setContentOffset(.zero, animated: false)
-		}
-	}
-}
-
-//extension UIGestureRecognizerDelegate where Self: ChangeableBottomSheetWithTableView {
-//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-//
-//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
-//			return false
-//		} else {
-//			return true
-//		}
-//	}
-//}
-//
-//extension UIScrollViewDelegate where Self: ChangeableBottomSheetWithTableView {
-//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//
-//		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
-//			scrollView.setContentOffset(.zero, animated: false)
-//		}
-//	}
-//}
-
-//extension UIViewController {
-//	var bottomSheet: BottomSheet? {
-//		if var topController = getKeyWindow()?.rootViewController {
-//			while let presentedViewController = topController.presentedViewController {
-//				topController = presentedViewController
-//			}
-//			guard let bottomSheet = topController as? BottomSheet else { return nil }
-//			return bottomSheet
-//		}
-//		return nil
-//	}
-//
-//	// MARK: - return KeyWindow
-//	func getKeyWindow() -> UIWindow? {
-//		var window: UIWindow?
-//		if #available(iOS 13.0, *) {
-//			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-//		} else {
-//			window = UIApplication.shared.keyWindow
-//		}
-//		return window
-//	}
-//}
-
-var bottomSheet: BottomSheet? {
-	if var topController = getKeyWindow()?.rootViewController {
-		while let presentedViewController = topController.presentedViewController {
-			topController = presentedViewController
-		}
-		guard let bottomSheet = topController as? BottomSheet else { return nil }
-		return bottomSheet
-	}
-	return nil
-}
-
-// MARK: - return KeyWindow
-func getKeyWindow() -> UIWindow? {
-	var window: UIWindow?
-	if #available(iOS 13.0, *) {
-		window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-	} else {
-		window = UIApplication.shared.keyWindow
-	}
-	return window
 }
 
 class BottomSheet: UIViewController {
@@ -226,7 +159,7 @@ class BottomSheet: UIViewController {
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController & UIGestureRecognizerDelegate, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
