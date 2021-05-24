@@ -32,17 +32,18 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 extension TableViewSampleViewController: ChangeableBottomSheetWithScrollView {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
-		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+		if let bottomSheet = bottomSheet, bottomSheet.isExpand, tableView.contentOffset.y > 0 {
 			return false
-		} else {
-			return true
 		}
+		return true
 	}
 
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
-		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
-			scrollView.setContentOffset(.zero, animated: false)
+		if let bottomSheet = bottomSheet {
+			if !bottomSheet.isExpand || scrollView.contentOffset.y <= 0 {
+				scrollView.setContentOffset(.zero, animated: false)
+			}
 		}
 	}
 }
