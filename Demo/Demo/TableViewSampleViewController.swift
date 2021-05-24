@@ -8,7 +8,8 @@
 
 import UIKit
 
-class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+
+class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, ChangeableBottomSheetWithTableView {
 	@IBOutlet weak var tableView: UITableView!
 
 	override func viewDidLoad() {
@@ -28,22 +29,70 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 	}
 }
 
-extension TableViewSampleViewController: UIGestureRecognizerDelegate {
-	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//extension TableViewSampleViewController {
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+//			return false
+//		} else {
+//			return true
+//		}
+//	}
+//
+//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//
+//		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
+//			scrollView.setContentOffset(.zero, animated: false)
+//		}
+//	}
+//}
 
-		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
-			return false
-		} else {
-			return true
-		}
-	}
-}
+//extension TableViewSampleViewController: UIGestureRecognizerDelegate {
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+//			return false
+//		} else {
+//			return true
+//		}
+//	}
+//}
+//
+//extension TableViewSampleViewController: UIScrollViewDelegate {
+//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//
+//		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
+//			scrollView.setContentOffset(.zero, animated: false)
+//		}
+//	}
+//}
 
-extension TableViewSampleViewController: UIScrollViewDelegate {
-	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//extension UIViewController: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+//
+//}
 
-		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
-			scrollView.setContentOffset(.zero, animated: false)
-		}
-	}
-}
+//class ChangeableBottomSheetWithScrollViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+//			return false
+//		} else {
+//			return true
+//		}
+//	}
+//
+//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//
+//		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
+//			scrollView.setContentOffset(.zero, animated: false)
+//		}
+//	}
+//}
+//
+//extension UIGestureRecognizerDelegate where Self: ChangeableBottomSheetWithScrollViewController {
+//
+//}
+//
+//extension UIScrollViewDelegate where Self: ChangeableBottomSheetWithScrollViewController {
+//
+//}

@@ -17,28 +17,100 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-extension UIViewController {
-	var bottomSheet: BottomSheet? {
-		if var topController = getKeyWindow()?.rootViewController {
-			while let presentedViewController = topController.presentedViewController {
-				topController = presentedViewController
-			}
-			guard let bottomSheet = topController as? BottomSheet else { return nil }
-			return bottomSheet
+protocol ChangeableBottomSheetWithScrollView: AnyObject {
+	var scrollView: UIScrollView! { get set }
+}
+
+//protocol ChangeableBottomSheetWithTableView: AnyObject {
+//	var tableView: UITableView! { get set }
+//}
+
+protocol ChangeableBottomSheetWithTableView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+	var tableView: UITableView! { get set }
+}
+
+extension ChangeableBottomSheetWithTableView {
+	public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+
+		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+			return false
+		} else {
+			return true
 		}
-		return nil
 	}
 
-	// MARK: - return KeyWindow
-	func getKeyWindow() -> UIWindow? {
-		var window: UIWindow?
-		if #available(iOS 13.0, *) {
-			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-		} else {
-			window = UIApplication.shared.keyWindow
+	public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+
+		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
+			scrollView.setContentOffset(.zero, animated: false)
 		}
-		return window
 	}
+}
+
+//extension UIGestureRecognizerDelegate where Self: ChangeableBottomSheetWithTableView {
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand {
+//			return false
+//		} else {
+//			return true
+//		}
+//	}
+//}
+//
+//extension UIScrollViewDelegate where Self: ChangeableBottomSheetWithTableView {
+//	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+//
+//		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
+//			scrollView.setContentOffset(.zero, animated: false)
+//		}
+//	}
+//}
+
+//extension UIViewController {
+//	var bottomSheet: BottomSheet? {
+//		if var topController = getKeyWindow()?.rootViewController {
+//			while let presentedViewController = topController.presentedViewController {
+//				topController = presentedViewController
+//			}
+//			guard let bottomSheet = topController as? BottomSheet else { return nil }
+//			return bottomSheet
+//		}
+//		return nil
+//	}
+//
+//	// MARK: - return KeyWindow
+//	func getKeyWindow() -> UIWindow? {
+//		var window: UIWindow?
+//		if #available(iOS 13.0, *) {
+//			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+//		} else {
+//			window = UIApplication.shared.keyWindow
+//		}
+//		return window
+//	}
+//}
+
+var bottomSheet: BottomSheet? {
+	if var topController = getKeyWindow()?.rootViewController {
+		while let presentedViewController = topController.presentedViewController {
+			topController = presentedViewController
+		}
+		guard let bottomSheet = topController as? BottomSheet else { return nil }
+		return bottomSheet
+	}
+	return nil
+}
+
+// MARK: - return KeyWindow
+func getKeyWindow() -> UIWindow? {
+	var window: UIWindow?
+	if #available(iOS 13.0, *) {
+		window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+	} else {
+		window = UIApplication.shared.keyWindow
+	}
+	return window
 }
 
 class BottomSheet: UIViewController {
