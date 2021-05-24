@@ -43,7 +43,7 @@ extension TableViewSampleViewController: UIScrollViewDelegate {
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
 
 		if let bottomSheet = bottomSheet, !bottomSheet.isExpand {
-			tableView.setContentOffset(.zero, animated: false)
+			scrollView.setContentOffset(.zero, animated: false)
 		}
 	}
 }
