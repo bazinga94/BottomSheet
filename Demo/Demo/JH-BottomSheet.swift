@@ -17,12 +17,8 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-protocol ChangeableBottomSheetWithScrollView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
-	var scrollView: UIScrollView! { get set }
-}
-
-protocol ChangeableBottomSheetWithTableView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
-	var tableView: UITableView! { get set }
+protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
+	var delegate: ChangeableScrollContentsDelegate? { get set }
 }
 
 protocol ChangeableScrollContentsDelegate: AnyObject {
@@ -169,29 +165,7 @@ class BottomSheet: UIViewController {
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
-		self.childViewController = childViewController
-		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
-		self.sheetHeight = maxHeight + bottomSafeAreaInsets
-		self.initialHeight = initialHeight + bottomSafeAreaInsets
-		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-		self.isTapDismiss = isTapDismiss
-		self.availablePanning = true
-		self.dismissListener = dismissListener
-		self.modalPresentationStyle = .overFullScreen
-		self.modalType = .changeable
-	}
-
-	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션) + table view가 childViewController에 있는 경우
-	/// - Parameters:
-	///   - childViewController: bottom sheet의 container view에 들어갈 view controller & table view를 포함하는 경우
-	///   - initialHeight: bottom sheet 초기 높이
-	///   - maxHeight: bottom sheet 최대 높이
-	///   - dim: background dim 처리 확인
-	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController & ChangeableBottomSheetWithTableView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
-		super.init(nibName: nil, bundle: nil)
+		childViewController.delegate = self
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
 		self.sheetHeight = maxHeight + bottomSafeAreaInsets
@@ -299,9 +273,6 @@ class BottomSheet: UIViewController {
 		}
 		if availablePanning {
 			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
-			if let childVC = childViewController as? UIGestureRecognizerDelegate {
-				containerViewGestureRecognizer.delegate = childVC
-			}
 			containerView.addGestureRecognizer(containerViewGestureRecognizer)	// bottom sheet 전체 영역 gesture 추가
 		}
 	}
@@ -391,7 +362,6 @@ class BottomSheet: UIViewController {
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
-//			manageTableViewScroll(true)
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
 			if !dim {	// dim 처리 X
@@ -400,18 +370,8 @@ class BottomSheet: UIViewController {
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
 			} else if modalType == .changeable, newHeight < initialHeight {		// mode changeable, panning 한 높이가 초기보다 낮은 경우
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight))
-//				manageTableViewScroll(false)
 			} else {	// mode fixed, flexible
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight))
-			}
-		}
-	}
-
-	/// ChangeableBottomSheetWithTableView을 채택한 view controller의 경우 tableview scroll 관리
-	private func manageTableViewScroll(_ enable: Bool) {
-		if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView {
-			if tableView.isScrollEnabled != enable {
-				tableView.isScrollEnabled = enable
 			}
 		}
 	}
@@ -446,15 +406,14 @@ class BottomSheet: UIViewController {
 extension BottomSheet: ChangeableScrollContentsDelegate {
 	func contentsScrollViewDidScroll(_ scrollView: UIScrollView) {
 		let offset = scrollView.contentOffset.y
-		print(offset, isExpand, scrollView.panGestureRecognizer.state.rawValue, initialHeight, -topConstraint.constant)
 
-		if !isExpand {
-			if offset >= 0.0 || initialHeight < -topConstraint.constant {
+		if isExpand {
+			if offset <= 0.0 || initialHeight > -topConstraint.constant {
 				scrollView.setContentOffset(.zero, animated: false)
 				defaultPanGesture(scrollView.panGestureRecognizer)
 			}
 		} else {
-			if offset <= 0.0 || initialHeight > -topConstraint.constant {
+			if offset >= 0.0 || initialHeight < -topConstraint.constant {
 				scrollView.setContentOffset(.zero, animated: false)
 				defaultPanGesture(scrollView.panGestureRecognizer)
 			}
@@ -462,14 +421,10 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 	}
 
 	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-		let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView).y
+		let offset = scrollView.contentOffset.y
 
-		if !isExpand {
+		if offset == 0 {
 			defaultPanGesture(scrollView.panGestureRecognizer)
-		} else {
-			if scrollView.contentOffset.y == 0 {
-				defaultPanGesture(scrollView.panGestureRecognizer)
-			}
 		}
 	}
 }
