@@ -22,6 +22,10 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 		return 10
 	}
 
+	func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+		return 60
+	}
+
 	func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
 		let cell = tableView.dequeueReusableCell(withIdentifier: "SampleTableViewCell", for: indexPath) as! SampleTableViewCell
 		cell.indexLabel.text = String(indexPath.row)
