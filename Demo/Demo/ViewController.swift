@@ -27,6 +27,7 @@ class ViewController: UIViewController {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "TableViewSheet") as! TableViewSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, dismissListener: nil)
+		vc.delegate = bottomSheet
 		bottomSheet.show(presentView: self)
 	}
 

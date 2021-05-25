@@ -11,6 +11,7 @@ import UIKit
 
 class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 	@IBOutlet weak var tableView: UITableView!
+	weak var delegate: ChangeableScrollContentsDelegate?
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -30,20 +31,24 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 }
 
 extension TableViewSampleViewController: ChangeableBottomSheetWithTableView {
-	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-
-		if let bottomSheet = bottomSheet, bottomSheet.isExpand, tableView.contentOffset.y > 0 {
-			return false
-		}
-		return true
-	}
+//	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+//
+//		if let bottomSheet = bottomSheet, bottomSheet.isExpand, tableView.contentOffset.y > 0 {
+//			return false
+//		}
+//		return true
+//	}
 
 	func scrollViewDidScroll(_ scrollView: UIScrollView) {
+		delegate?.contentsScrollViewDidScroll(scrollView)
+//		if let bottomSheet = bottomSheet {
+//			if !bottomSheet.isExpand || scrollView.contentOffset.y <= 0 {
+//				scrollView.setContentOffset(.zero, animated: false)
+//			}
+//		}
+	}
 
-		if let bottomSheet = bottomSheet {
-			if !bottomSheet.isExpand || scrollView.contentOffset.y <= 0 {
-				scrollView.setContentOffset(.zero, animated: false)
-			}
-		}
+	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+		delegate?.contentsScrollViewDidEndDragging(scrollView, willDecelerate: decelerate)
 	}
 }

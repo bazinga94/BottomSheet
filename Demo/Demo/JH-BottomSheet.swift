@@ -25,6 +25,11 @@ protocol ChangeableBottomSheetWithTableView: UIGestureRecognizerDelegate, UIScro
 	var tableView: UITableView! { get set }
 }
 
+protocol ChangeableScrollContentsDelegate: AnyObject {
+	func contentsScrollViewDidScroll(_ scrollView: UIScrollView)
+	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
+}
+
 extension UIViewController {
 	var bottomSheet: BottomSheet? {
 		if var topController = getKeyWindow()?.rootViewController {
@@ -386,7 +391,7 @@ class BottomSheet: UIViewController {
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
-			manageTableViewScroll(true)
+//			manageTableViewScroll(true)
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
 			if !dim {	// dim 처리 X
@@ -395,7 +400,7 @@ class BottomSheet: UIViewController {
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
 			} else if modalType == .changeable, newHeight < initialHeight {		// mode changeable, panning 한 높이가 초기보다 낮은 경우
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight))
-				manageTableViewScroll(false)
+//				manageTableViewScroll(false)
 			} else {	// mode fixed, flexible
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight))
 			}
@@ -435,5 +440,36 @@ class BottomSheet: UIViewController {
 			bottomSafeArea = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
 		}
 		return bottomSafeArea
+	}
+}
+
+extension BottomSheet: ChangeableScrollContentsDelegate {
+	func contentsScrollViewDidScroll(_ scrollView: UIScrollView) {
+		let offset = scrollView.contentOffset.y
+		print(offset, isExpand, scrollView.panGestureRecognizer.state.rawValue, initialHeight, -topConstraint.constant)
+
+		if !isExpand {
+			if offset >= 0.0 || initialHeight < -topConstraint.constant {
+				scrollView.setContentOffset(.zero, animated: false)
+				defaultPanGesture(scrollView.panGestureRecognizer)
+			}
+		} else {
+			if offset <= 0.0 || initialHeight > -topConstraint.constant {
+				scrollView.setContentOffset(.zero, animated: false)
+				defaultPanGesture(scrollView.panGestureRecognizer)
+			}
+		}
+	}
+
+	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+		let velocity = scrollView.panGestureRecognizer.velocity(in: scrollView).y
+
+		if !isExpand {
+			defaultPanGesture(scrollView.panGestureRecognizer)
+		} else {
+			if scrollView.contentOffset.y == 0 {
+				defaultPanGesture(scrollView.panGestureRecognizer)
+			}
+		}
 	}
 }
