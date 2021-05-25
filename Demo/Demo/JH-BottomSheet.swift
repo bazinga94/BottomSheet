@@ -295,7 +295,7 @@ class BottomSheet: UIViewController {
 		if availablePanning {
 			let containerViewGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panGesture(_:)))
 			if let childVC = childViewController as? UIGestureRecognizerDelegate {
-				containerViewGestureRecognizer.delegate = childVC		// TODO: UIGestureRecognizerDelegater가 필요한 경우 어떻게 할지 고민
+				containerViewGestureRecognizer.delegate = childVC
 			}
 			containerView.addGestureRecognizer(containerViewGestureRecognizer)	// bottom sheet 전체 영역 gesture 추가
 		}
@@ -386,9 +386,7 @@ class BottomSheet: UIViewController {
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
-			if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView, !tableView.isScrollEnabled {
-				tableView.isScrollEnabled = true
-			}
+			manageTableViewScroll(true)
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
 			if !dim {	// dim 처리 X
@@ -397,11 +395,18 @@ class BottomSheet: UIViewController {
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
 			} else if modalType == .changeable, newHeight < initialHeight {		// mode changeable, panning 한 높이가 초기보다 낮은 경우
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight))
-				if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView, tableView.isScrollEnabled {
-					tableView.isScrollEnabled = false
-				}
+				manageTableViewScroll(false)
 			} else {	// mode fixed, flexible
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight))
+			}
+		}
+	}
+
+	/// ChangeableBottomSheetWithTableView을 채택한 view controller의 경우 tableview scroll 관리
+	private func manageTableViewScroll(_ enable: Bool) {
+		if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView {
+			if tableView.isScrollEnabled != enable {
+				tableView.isScrollEnabled = enable
 			}
 		}
 	}
