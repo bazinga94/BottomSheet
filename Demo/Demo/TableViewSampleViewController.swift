@@ -18,6 +18,10 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 		tableView.dataSource = self
 	}
 
+	override func viewWillAppear(_ animated: Bool) {
+		super.viewWillAppear(animated)
+	}
+
 	func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 		return 10
 	}
