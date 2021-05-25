@@ -17,6 +17,15 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
+class BottomSheetTableView: UITableView {
+	override func layoutSubviews() {
+		if (self.window == nil) {
+			return
+		}
+		super.layoutSubviews()
+	}
+}
+
 protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
 	var tableView: BottomSheetTableView! { get set }
 	var delegate: ChangeableScrollContentsDelegate? { get set }
