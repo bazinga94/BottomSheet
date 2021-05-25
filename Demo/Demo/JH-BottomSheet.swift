@@ -17,9 +17,12 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-@objc protocol ChangeableBottomSheetWithScrollView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
-	@objc optional var scrollView: UIScrollView! { get set }
-	@objc optional var tableView: UITableView! { get set }
+protocol ChangeableBottomSheetWithScrollView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+	var scrollView: UIScrollView! { get set }
+}
+
+protocol ChangeableBottomSheetWithTableView: UIGestureRecognizerDelegate, UIScrollViewDelegate {
+	var tableView: UITableView! { get set }
 }
 
 extension UIViewController {
@@ -153,13 +156,36 @@ class BottomSheet: UIViewController {
 
 	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션) + scroll view가 childViewController에 있는 경우
 	/// - Parameters:
-	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller & scroll view를 포함하는 경우
 	///   - initialHeight: bottom sheet 초기 높이
 	///   - maxHeight: bottom sheet 최대 높이
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+		super.init(nibName: nil, bundle: nil)
+		self.childViewController = childViewController
+		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
+		self.sheetHeight = maxHeight + bottomSafeAreaInsets
+		self.initialHeight = initialHeight + bottomSafeAreaInsets
+		self.dim = dim
+		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+		self.isTapDismiss = isTapDismiss
+		self.availablePanning = true
+		self.dismissListener = dismissListener
+		self.modalPresentationStyle = .overFullScreen
+		self.modalType = .changeable
+	}
+
+	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션) + table view가 childViewController에 있는 경우
+	/// - Parameters:
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller & table view를 포함하는 경우
+	///   - initialHeight: bottom sheet 초기 높이
+	///   - maxHeight: bottom sheet 최대 높이
+	///   - dim: background dim 처리 확인
+	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
+	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
+	init(childViewController: UIViewController & ChangeableBottomSheetWithTableView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()

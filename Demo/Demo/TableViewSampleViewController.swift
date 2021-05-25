@@ -29,7 +29,7 @@ class TableViewSampleViewController: UIViewController, UITableViewDataSource, UI
 	}
 }
 
-extension TableViewSampleViewController: ChangeableBottomSheetWithScrollView {
+extension TableViewSampleViewController: ChangeableBottomSheetWithTableView {
 	func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
 
 		if let bottomSheet = bottomSheet, bottomSheet.isExpand, tableView.contentOffset.y > 0 {
