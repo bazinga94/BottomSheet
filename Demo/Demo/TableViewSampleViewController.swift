@@ -8,8 +8,17 @@
 
 import UIKit
 
+class BottomSheetTableView: UITableView {
+	override func layoutSubviews() {
+		if (self.window == nil) {
+			return
+		}
+		super.layoutSubviews()
+	}
+}
+
 class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
-	@IBOutlet weak var tableView: UITableView!
+	@IBOutlet weak var tableView: BottomSheetTableView!
 	weak var delegate: ChangeableScrollContentsDelegate?
 
 	override func viewDidLoad() {

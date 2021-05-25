@@ -18,6 +18,7 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 }
 
 protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
+	var tableView: BottomSheetTableView! { get set }
 	var delegate: ChangeableScrollContentsDelegate? { get set }
 }
 

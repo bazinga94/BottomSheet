@@ -129,7 +129,7 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="czs-re-YBg">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="czs-re-YBg" customClass="BottomSheetTableView" customModule="Demo" customModuleProvider="target">
                                 <rect key="frame" x="20" y="205" width="374" height="617"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
@@ -176,7 +176,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="tableView" destination="czs-re-YBg" id="emI-A8-d6j"/>
+                        <outlet property="tableView" destination="czs-re-YBg" id="YrB-4D-J5i"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mLU-KB-9QY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
