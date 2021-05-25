@@ -386,6 +386,9 @@ class BottomSheet: UIViewController {
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
+			if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView, !tableView.isScrollEnabled {
+				tableView.isScrollEnabled = true
+			}
 		} else if gesture.state == .changed { // gesture가 진행 중
 			topConstraint.constant = -newHeight
 			if !dim {	// dim 처리 X
@@ -394,6 +397,9 @@ class BottomSheet: UIViewController {
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
 			} else if modalType == .changeable, newHeight < initialHeight {		// mode changeable, panning 한 높이가 초기보다 낮은 경우
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/initialHeight))
+				if let childVC = childViewController as? ChangeableBottomSheetWithTableView, let tableView = childVC.tableView, tableView.isScrollEnabled {
+					tableView.isScrollEnabled = false
+				}
 			} else {	// mode fixed, flexible
 				self.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha * (newHeight/maxHeight))
 			}
