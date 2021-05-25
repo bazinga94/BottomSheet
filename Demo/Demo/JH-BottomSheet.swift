@@ -19,7 +19,7 @@ protocol FlexibleBottomSheetDelegate: AnyObject {
 
 class BottomSheetTableView: UITableView {
 	override func layoutSubviews() {
-		if (self.window == nil) {
+		if (self.window == nil) {	// view가 아직 window에 add 되지 않은 상태
 			return
 		}
 		super.layoutSubviews()
