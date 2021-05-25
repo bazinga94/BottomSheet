@@ -345,6 +345,7 @@ class BottomSheet: UIViewController {
 	public func resizeSheet(height: CGFloat) {
 		topConstraint.constant = -height
 		heightConstraint.constant = height
+		initialHeight = height
 		sheetHeight = height
 		isExpand = true
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
@@ -382,7 +383,6 @@ class BottomSheet: UIViewController {
 				dismissSheet()
 			} else if newHeight > initialHeight {
 				resizeSheet(height: self.sheetHeight)
-				self.initialHeight = self.sheetHeight
 			} else { // 절반 이하로 panning된 경우
 				sheetAppearAnimation()
 			}
