@@ -423,10 +423,12 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 				defaultPanGesture(scrollView.panGestureRecognizer)
 			}
 		} else {
-			if offset >= 0.0 || initialHeight < -topConstraint.constant {
-				scrollView.setContentOffset(.zero, animated: false)
-				defaultPanGesture(scrollView.panGestureRecognizer)
-			}
+//			if offset >= 0.0 || initialHeight < -topConstraint.constant {
+//				scrollView.setContentOffset(.zero, animated: false)
+//				defaultPanGesture(scrollView.panGestureRecognizer)
+//			}
+			scrollView.setContentOffset(.zero, animated: false)
+			defaultPanGesture(scrollView.panGestureRecognizer)
 		}
 	}
 
