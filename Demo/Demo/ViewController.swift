@@ -20,6 +20,7 @@ class ViewController: UIViewController {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
+//		let navigationController = UINavigationController(rootViewController: bottomSheet)
 		bottomSheet.show(presentView: self)
 	}
 

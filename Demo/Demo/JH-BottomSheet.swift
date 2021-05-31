@@ -299,7 +299,10 @@ class BottomSheet: UIViewController {
 	///   - completion: UIViewController present 함수의 completion handler
 	public func show(presentView: UIViewController, completion: CommonFuncType? = nil) {
 		self.showCompletion = completion
-		presentView.present(self, animated: false, completion: nil)
+		let navigationController = UINavigationController(rootViewController: self)
+		navigationController.modalPresentationStyle = .overFullScreen
+		presentView.present(navigationController, animated: false, completion: nil)
+//		presentView.present(self, animated: false, completion: nil)
 	}
 
 	// MARK: - bottom sheet를 dismiss
