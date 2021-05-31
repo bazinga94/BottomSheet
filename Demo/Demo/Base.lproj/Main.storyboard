@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="h2V-Wr-kHQ">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -18,21 +18,21 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="X24-NV-Oqb">
-                                <rect key="frame" x="156" y="488" width="102" height="30"/>
+                                <rect key="frame" x="156" y="510" width="102" height="30"/>
                                 <state key="normal" title="Flexible Height"/>
                                 <connections>
                                     <action selector="showFlexibleBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ldd-6b-c4E"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ce4-GL-j40">
-                                <rect key="frame" x="164" y="388" width="86" height="30"/>
+                                <rect key="frame" x="164" y="410" width="86" height="30"/>
                                 <state key="normal" title="Fixed Height"/>
                                 <connections>
                                     <action selector="showFixedBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="1vV-gC-jPW"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zcB-r7-l1S">
-                                <rect key="frame" x="141" y="298" width="132" height="30"/>
+                                <rect key="frame" x="141" y="320" width="132" height="30"/>
                                 <state key="normal" title="Changeable Height"/>
                                 <connections>
                                     <action selector="showChangeableBottomSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P40-Jw-NQJ"/>
@@ -50,10 +50,11 @@
                             <constraint firstItem="zcB-r7-l1S" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="o01-fo-W4g"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="3Rm-pH-smr"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="133" y="139"/>
+            <point key="canvasLocation" x="1042.0289855072465" y="138.61607142857142"/>
         </scene>
         <!--Flexible Sample View Controller-->
         <scene sceneID="Khh-KU-xBj">
@@ -84,13 +85,24 @@
                                             <action selector="closeBottomSheet:" destination="vz8-Kv-17a" eventType="touchUpInside" id="t2s-P9-b2H"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="wfz-CJ-Zpn">
+                                        <rect key="frame" x="135" y="181" width="144" height="30"/>
+                                        <state key="normal" title="Navigation Push Test">
+                                            <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="navigationPush:" destination="vz8-Kv-17a" eventType="touchUpInside" id="56Q-L6-MB8"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBlueColor"/>
                                 <constraints>
                                     <constraint firstItem="Inw-tb-Js7" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="20" id="1qp-6Q-aRo"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="top" secondItem="zf7-mA-NCT" secondAttribute="top" constant="100" id="T82-yk-Vep"/>
+                                    <constraint firstItem="wfz-CJ-Zpn" firstAttribute="top" secondItem="cg1-f4-TXs" secondAttribute="bottom" constant="60" id="a0W-9j-37L"/>
                                     <constraint firstAttribute="bottom" secondItem="cg1-f4-TXs" secondAttribute="bottom" constant="200" id="bU2-0T-Any"/>
                                     <constraint firstItem="cg1-f4-TXs" firstAttribute="centerX" secondItem="zf7-mA-NCT" secondAttribute="centerX" id="dnf-T5-r4V"/>
+                                    <constraint firstItem="wfz-CJ-Zpn" firstAttribute="centerX" secondItem="zf7-mA-NCT" secondAttribute="centerX" id="mY3-dy-u6Y"/>
                                     <constraint firstAttribute="trailing" secondItem="Inw-tb-Js7" secondAttribute="trailing" constant="20" id="qI7-SA-plO"/>
                                 </constraints>
                             </view>
@@ -109,7 +121,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="BnQ-4r-XHr" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="896" y="139"/>
+            <point key="canvasLocation" x="1805.7971014492755" y="138.61607142857142"/>
         </scene>
         <!--Table View Sample View Controller-->
         <scene sceneID="izV-15-Acx">
@@ -181,7 +193,25 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mLU-KB-9QY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1603" y="139"/>
+            <point key="canvasLocation" x="2513.04347826087" y="138.61607142857142"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="BVn-8c-6xO">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="h2V-Wr-kHQ" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ueJ-KK-wuh">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="ijI-mG-ubC"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="B4O-2f-Yfy" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="131.8840579710145" y="138.61607142857142"/>
         </scene>
     </scenes>
     <resources>
