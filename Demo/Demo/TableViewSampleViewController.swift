@@ -46,6 +46,10 @@ extension TableViewSampleViewController: ChangeableBottomSheetWithScrollView {
 		delegate?.contentsScrollViewDidScroll(scrollView)
 	}
 
+	func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		delegate?.contentsScrollViewWillBeginDragging(scrollView)
+	}
+
 	func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
 		delegate?.contentsScrollViewDidEndDragging(scrollView, willDecelerate: decelerate)
 	}

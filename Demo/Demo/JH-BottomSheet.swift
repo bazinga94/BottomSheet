@@ -33,6 +33,7 @@ protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
 
 protocol ChangeableScrollContentsDelegate: AnyObject {
 	func contentsScrollViewDidScroll(_ scrollView: UIScrollView)
+	func contentsScrollViewWillBeginDragging(_ scrollView: UIScrollView)
 	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
 }
 
@@ -430,6 +431,10 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 			scrollView.setContentOffset(.zero, animated: false)
 			defaultPanGesture(scrollView.panGestureRecognizer)
 		}
+	}
+
+	func contentsScrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+		scrollView.showsVerticalScrollIndicator = isExpand
 	}
 
 	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
