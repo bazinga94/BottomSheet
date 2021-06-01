@@ -42,8 +42,13 @@ extension UIViewController {
 			while let presentedViewController = topController.presentedViewController {
 				topController = presentedViewController
 			}
-			guard let bottomSheet = topController as? BottomSheet else { return nil }
-			return bottomSheet
+			if let bottomSheet = topController as? BottomSheet {
+				return bottomSheet
+			} else if
+				let navigationController = topController as? UINavigationController,
+				let bottomSheet = navigationController.viewControllers.first as? BottomSheet {
+				return bottomSheet
+			}
 		}
 		return nil
 	}
@@ -299,10 +304,14 @@ class BottomSheet: UIViewController {
 	///   - completion: UIViewController present 함수의 completion handler
 	public func show(presentView: UIViewController, completion: CommonFuncType? = nil) {
 		self.showCompletion = completion
+		presentView.present(self, animated: false, completion: nil)
+	}
+
+	public func showByNavi(presentView: UIViewController, completion: CommonFuncType? = nil) {
+		self.showCompletion = completion
 		let navigationController = UINavigationController(rootViewController: self)
 		navigationController.modalPresentationStyle = .overFullScreen
 		presentView.present(navigationController, animated: false, completion: nil)
-//		presentView.present(self, animated: false, completion: nil)
 	}
 
 	// MARK: - bottom sheet를 dismiss

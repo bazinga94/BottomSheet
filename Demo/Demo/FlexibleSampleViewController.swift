@@ -18,8 +18,5 @@ class FlexibleSampleViewController: UIViewController, FlexibleBottomSheetDelegat
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "TableViewSheet") as! TableViewSampleViewController
 		self.navigationController?.pushViewController(vc, animated: true)
-//		if let navigationController = bottomSheet?.presentingViewController as? UINavigationController {
-//			navigationController.pushViewController(vc, animated: true)
-//		}
 	}
 }
