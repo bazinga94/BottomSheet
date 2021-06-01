@@ -21,7 +21,8 @@ class ViewController: UIViewController {
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
 //		bottomSheet.show(presentView: self)
-		bottomSheet.showByNavi(presentView: self)
+		let navigationController = UINavigationController(rootViewController: bottomSheet)
+		bottomSheet.showByNavi(presentView: self, navigationController: navigationController)
 	}
 
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {

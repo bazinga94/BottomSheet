@@ -307,9 +307,13 @@ class BottomSheet: UIViewController {
 		presentView.present(self, animated: false, completion: nil)
 	}
 
-	public func showByNavi(presentView: UIViewController, completion: CommonFuncType? = nil) {
+	/// Bottom Sheet를 네비게이션 stack에서 show
+	/// - Parameters:
+	///   - presentView: Bottom Sheet를 띄우는 UIViewController
+	///   - navigationController: BottomSheet를 rootViewController로 가지고 있는 UINavigationController
+	///   - completion: UINavigationController present 함수의 completion handler
+	public func showByNavi(presentView: UIViewController, navigationController: UINavigationController, completion: CommonFuncType? = nil) {
 		self.showCompletion = completion
-		let navigationController = UINavigationController(rootViewController: self)
 		navigationController.modalPresentationStyle = .overFullScreen
 		presentView.present(navigationController, animated: false, completion: nil)
 	}
