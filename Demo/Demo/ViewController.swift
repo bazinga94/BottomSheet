@@ -22,6 +22,7 @@ class ViewController: UIViewController {
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
 //		bottomSheet.show(presentView: self)
 		let navigationController = UINavigationController(rootViewController: bottomSheet)
+//		navigationController.isNavigationBarHidden = true
 		bottomSheet.showByNavi(presentView: self, navigationController: navigationController)
 	}
 
