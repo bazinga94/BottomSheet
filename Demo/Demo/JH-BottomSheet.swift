@@ -38,6 +38,10 @@ protocol ChangeableScrollContentsDelegate: AnyObject {
 }
 
 extension UIViewController {
+//	func present(_ viewControllerToPresent: BottomSheet, animated flag: Bool, completion: (() -> Void)? = nil) {
+//		self.present(viewControllerToPresent, animated: false, completion: completion)
+//	}
+
 	var bottomSheet: BottomSheet? {
 		if var topController = getKeyWindow()?.rootViewController {
 			while let presentedViewController = topController.presentedViewController {

@@ -13,7 +13,8 @@ class ViewController: UIViewController {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
 		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
-		bottomSheet.show(presentView: self)
+//		bottomSheet.show(presentView: self)
+		present(bottomSheet, animated: false, completion: nil)	// BottomSheet을 그냥 view controller present 하듯 사용하는 방법 찾기..! animated를 true로 주면 이상함...
 	}
 
 	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
