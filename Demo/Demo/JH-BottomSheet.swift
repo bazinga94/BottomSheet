@@ -212,6 +212,11 @@ class BottomSheet: UIViewController {
 		sheetAppearAnimation(completion: showCompletion)
 	}
 
+	public override func viewWillDisappear(_ animated: Bool) {
+		super.viewWillDisappear(animated)
+		dismissSheet()
+	}
+
 	/// bottom sheet 등장 애니메이션
 	/// - Parameter completion: show complete closure
 	private func sheetAppearAnimation(completion: CommonFuncType? = nil) {
