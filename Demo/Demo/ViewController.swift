@@ -14,7 +14,6 @@ class ViewController: UIViewController {
 		vc.view.backgroundColor = .red
 		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
 //		bottomSheet.show(presentView: self)
-//		bottomSheet.transitioningDelegate = self
 		present(bottomSheet, animated: false, completion: nil)	// BottomSheet을 그냥 view controller present 하듯 사용하는 방법 찾기..! animated를 true로 주면 이상함...
 	}
 
@@ -22,7 +21,6 @@ class ViewController: UIViewController {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
-//		bottomSheet.transitioningDelegate = self	// 이렇게 하면 애니메이션은 적용이 되는데 transition view가 안사라짐 ...
 //		bottomSheet.show(presentView: self)
 		present(bottomSheet, animated: false, completion: nil)
 	}
@@ -36,43 +34,5 @@ class ViewController: UIViewController {
 
 	override func viewDidLoad() {
 		super.viewDidLoad()
-	}
-}
-
-extension ViewController: UIViewControllerTransitioningDelegate {
-//	 present될때 실행애니메이션
-	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-		return PresentAnimation()
-	}
-
-	// dismiss될때 실행애니메이션
-	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//		return DismissAnimator()
-		return self
-	}
-}
-
-extension ViewController: UIViewControllerAnimatedTransitioning {
-	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-		return 0.3
-	}
-
-	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-		guard let fromViewController = transitionContext.viewController(forKey: .from) as? BottomSheet else {
-			return
-		}
-		fromViewController.topConstraint.constant = 0
-		let fromView = fromViewController.view
-		fromView?.isUserInteractionEnabled = false
-
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromView] in
-			//			fromViewController?.view.layoutIfNeeded()
-			//			fromViewController?.view.backgroundColor = .clear
-			fromView?.layoutIfNeeded()
-			//			fromView?.backgroundColor = .clear
-		}, completion: { _ in
-//			fromView?.removeFromSuperview()
-			transitionContext.completeTransition(true)	// 이거네..
-		})
 	}
 }

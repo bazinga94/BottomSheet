@@ -142,7 +142,7 @@ class BottomSheet: UIViewController {
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
 		self.dismissListener = dismissListener
-//		self.modalPresentationStyle = .overFullScreen
+//		self.modalPresentationStyle = .overFullScreen	// TODO: 이제 custom 타입만 사용해야 하는건지 확인!
 		self.modalPresentationStyle = .custom
 		self.modalType = .flexible
 		self.noAddBottomSafeArea = noAddBottomSafeArea
@@ -221,7 +221,6 @@ class BottomSheet: UIViewController {
 	public override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 //		dismissSheet()	// 도움이 안됨...
-//		transitioningDelegate = nil
 //		dismiss(animated: false, completion: nil)
 	}
 
@@ -492,20 +491,14 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet, let toView = toViewController.view else {
 			return
 		}
-		toViewController.topConstraint.constant = -400
+		toViewController.topConstraint.constant = -400	// 임의로 하드코딩
 
 		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak toView] in
 			toView?.layoutIfNeeded()
 			toView?.backgroundColor = UIColor(white: 0, alpha: 0.5)
-		}, completion: { _ in
-//			fromView.removeFromSuperview()
-			transitionContext.completeTransition(true)
+		}, completion: { success in
+			transitionContext.completeTransition(success)
 		})
-
-//		let containerView = transitionContext.containerView
-//		// 다음 보여질뷰 참조
-//		guard let toView = transitionContext.view(forKey: .to) else { return }
-//		containerView.addSubview(toView)
 	}
 }
 
@@ -523,8 +516,8 @@ class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromView] in
 			fromView?.layoutIfNeeded()
 			fromView?.backgroundColor = .clear
-		}, completion: { _ in
-			transitionContext.completeTransition(true)
+		}, completion: { success in
+			transitionContext.completeTransition(success)
 		})
 	}
 }
