@@ -22,7 +22,7 @@ class ViewController: UIViewController {
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
 //		bottomSheet.show(presentView: self)
-		present(bottomSheet, animated: false, completion: nil)
+		present(bottomSheet, animated: true, completion: nil)
 	}
 
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {

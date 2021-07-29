@@ -211,7 +211,7 @@ class BottomSheet: UIViewController {
 	// MARK: - bottom sheet 등장 애니메이션, constraint를 조정하고 배경 dimm을 준다.
 	public override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		sheetAppearAnimation(completion: showCompletion)
+//		sheetAppearAnimation(completion: showCompletion)
 	}
 
 	public override func viewDidAppear(_ animated: Bool) {
@@ -471,9 +471,9 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 
 extension BottomSheet: UIViewControllerTransitioningDelegate {
 	// present될때 실행애니메이션
-//	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//		return PresentAnimation()
-//	}
+	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+		return PresentAnimation()
+	}
 
 	// dismiss될때 실행애니메이션
 	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
@@ -488,17 +488,35 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 	}
 
 	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet, let toView = toViewController.view else {
-			return
-		}
-		toViewController.topConstraint.constant = -400	// 임의로 하드코딩
+//		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet, let toView = toViewController.view else {
+//			return
+//		}
+////		toViewController.topConstraint.constant = -400	// 임의로 하드코딩
+//
+//		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak toView] in
+//			toView?.layoutIfNeeded()
+//			toView?.backgroundColor = UIColor(white: 0, alpha: 0.5)
+//		}, completion: { success in
+//			transitionContext.completeTransition(success)	// -> success는 false
+//		})
+		let containerView = transitionContext.containerView
 
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak toView] in
-			toView?.layoutIfNeeded()
-			toView?.backgroundColor = UIColor(white: 0, alpha: 0.5)
+		guard let toView = transitionContext.view(forKey: .to) else { return }
+		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet else { return }
+
+//		toView.transform = CGAffineTransform(translationX: 0, y: containerView.bounds.height)
+
+		containerView.addSubview(toView)
+		containerView.bringSubviewToFront(toView)
+
+		UIView.animate(withDuration: 0.3, animations: {
+			toView.transform = CGAffineTransform(translationX: 0, y: -400)
+			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		}, completion: { success in
+			toViewController.topConstraint.constant = -toViewController.initialHeight
 			transitionContext.completeTransition(success)
 		})
+		toViewController.view.layoutIfNeeded()
 	}
 }
 
