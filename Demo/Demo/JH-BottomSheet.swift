@@ -145,6 +145,8 @@ class BottomSheet: UIViewController {
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .flexible
 		self.noAddBottomSafeArea = noAddBottomSafeArea
+//		transitioningDelegate = self
+		self.transitioningDelegate = self
 	}
 
 	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션)
@@ -214,7 +216,14 @@ class BottomSheet: UIViewController {
 
 	public override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-		dismissSheet()
+//		dismissSheet()	// 도움이 안됨...
+//		transitioningDelegate = nil
+//		dismiss(animated: false, completion: nil)
+	}
+
+	public override func viewDidDisappear(_ animated: Bool) {
+		super.viewDidDisappear(animated)
+//		dismiss(animated: false, completion: nil)
 	}
 
 	/// bottom sheet 등장 애니메이션
@@ -299,7 +308,8 @@ class BottomSheet: UIViewController {
 
 	// MARK: - UITapGestureRecognizer의 selector에 인자로 줄 objc 함수
 	@objc func tapBackgroundView() {
-		self.dismissSheet()
+//		self.dismissSheet()
+		self.dismiss(animated: true, completion: nil)
 	}
 
 	// MARK: Bottom Sheet를 show
@@ -452,5 +462,36 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 		if offset == 0 {
 			defaultPanGesture(scrollView.panGestureRecognizer)
 		}
+	}
+}
+
+extension BottomSheet: UIViewControllerTransitioningDelegate {
+	// present될때 실행애니메이션
+//	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//		return transition
+//	}
+
+	// dismiss될때 실행애니메이션
+	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+		return DismissAnimator()
+	}
+
+}
+
+class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+		return 0.3
+	}
+
+	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+		guard let fromViewController = transitionContext.viewController(forKey: .from) as? BottomSheet else {
+			return
+		}
+		fromViewController.topConstraint.constant = 0
+
+		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromViewController] in
+			fromViewController?.view.layoutIfNeeded()
+			fromViewController?.view.backgroundColor = .clear
+		})
 	}
 }

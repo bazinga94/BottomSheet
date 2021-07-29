@@ -21,6 +21,7 @@ class ViewController: UIViewController {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
+//		bottomSheet.transitioningDelegate = self	// 이렇게 하면 애니메이션은 적용이 되는데 transition view가 안사라짐 ...
 		bottomSheet.show(presentView: self)
 	}
 
@@ -35,3 +36,10 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 	}
 }
+
+//extension ViewController: UIViewControllerTransitioningDelegate {
+//	// dismiss될때 실행애니메이션
+//	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//		return DismissAnimator()
+//	}
+//}
