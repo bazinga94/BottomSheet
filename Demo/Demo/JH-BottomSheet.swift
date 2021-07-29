@@ -142,10 +142,10 @@ class BottomSheet: UIViewController {
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
 		self.dismissListener = dismissListener
-		self.modalPresentationStyle = .overFullScreen
+//		self.modalPresentationStyle = .overFullScreen
+		self.modalPresentationStyle = .custom
 		self.modalType = .flexible
 		self.noAddBottomSafeArea = noAddBottomSafeArea
-//		transitioningDelegate = self
 		self.transitioningDelegate = self
 	}
 
@@ -214,6 +214,10 @@ class BottomSheet: UIViewController {
 		sheetAppearAnimation(completion: showCompletion)
 	}
 
+	public override func viewDidAppear(_ animated: Bool) {
+		super.viewDidAppear(animated)
+	}
+
 	public override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 //		dismissSheet()	// 도움이 안됨...
@@ -223,6 +227,7 @@ class BottomSheet: UIViewController {
 
 	public override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
+//		dismissSheet()	// 도움이 안됨...
 //		dismiss(animated: false, completion: nil)
 	}
 
@@ -468,7 +473,7 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 extension BottomSheet: UIViewControllerTransitioningDelegate {
 	// present될때 실행애니메이션
 //	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-//		return transition
+//		return PresentAnimation()
 //	}
 
 	// dismiss될때 실행애니메이션
@@ -478,20 +483,48 @@ extension BottomSheet: UIViewControllerTransitioningDelegate {
 
 }
 
+class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
+	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+		return 0.3
+	}
+
+	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet, let toView = toViewController.view else {
+			return
+		}
+		toViewController.topConstraint.constant = -400
+
+		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak toView] in
+			toView?.layoutIfNeeded()
+			toView?.backgroundColor = UIColor(white: 0, alpha: 0.5)
+		}, completion: { _ in
+//			fromView.removeFromSuperview()
+			transitionContext.completeTransition(true)
+		})
+
+//		let containerView = transitionContext.containerView
+//		// 다음 보여질뷰 참조
+//		guard let toView = transitionContext.view(forKey: .to) else { return }
+//		containerView.addSubview(toView)
+	}
+}
+
 class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
 		return 0.3
 	}
 
 	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-		guard let fromViewController = transitionContext.viewController(forKey: .from) as? BottomSheet else {
+		guard let fromViewController = transitionContext.viewController(forKey: .from) as? BottomSheet, let fromView = fromViewController.view else {
 			return
 		}
 		fromViewController.topConstraint.constant = 0
 
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromViewController] in
-			fromViewController?.view.layoutIfNeeded()
-			fromViewController?.view.backgroundColor = .clear
+		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromView] in
+			fromView?.layoutIfNeeded()
+			fromView?.backgroundColor = .clear
+		}, completion: { _ in
+			transitionContext.completeTransition(true)
 		})
 	}
 }
