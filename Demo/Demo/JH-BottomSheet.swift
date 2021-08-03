@@ -211,7 +211,7 @@ class BottomSheet: UIViewController {
 	// MARK: - bottom sheet 등장 애니메이션, constraint를 조정하고 배경 dimm을 준다.
 	public override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
+//		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
 //		self.view.layoutIfNeeded()
 		self.view.setNeedsLayout()
 //		sheetAppearAnimation(completion: showCompletion)
@@ -513,10 +513,12 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 		containerView.bringSubviewToFront(toView)
 
 		UIView.animate(withDuration: 0.3, animations: {
-			toView.transform = CGAffineTransform(translationX: 0, y: -400)
+			toView.transform = CGAffineTransform(translationX: 0, y: -300)
 			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		}, completion: { success in
 //			toViewController.topConstraint.constant = -toViewController.initialHeight
+			toViewController.topConstraint.constant = -300
+			toView.transform = .identity
 			transitionContext.completeTransition(success)
 		})
 //		toViewController.view.layoutIfNeeded()
