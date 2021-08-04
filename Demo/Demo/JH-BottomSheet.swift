@@ -38,10 +38,6 @@ protocol ChangeableScrollContentsDelegate: AnyObject {
 }
 
 extension UIViewController {
-//	func present(_ viewControllerToPresent: BottomSheet, animated flag: Bool, completion: (() -> Void)? = nil) {
-//		self.present(viewControllerToPresent, animated: false, completion: completion)
-//	}
-
 	var bottomSheet: BottomSheet? {
 		if var topController = getKeyWindow()?.rootViewController {
 			while let presentedViewController = topController.presentedViewController {
@@ -124,6 +120,7 @@ class BottomSheet: UIViewController {
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .fixed
+		self.transitioningDelegate = self
 	}
 
 	/// bottom sheet initializer(높이 유동적)
@@ -170,6 +167,7 @@ class BottomSheet: UIViewController {
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
+		self.transitioningDelegate = self
 	}
 
 	/// bottom sheet initializer(높이 고정) + changeable(높이 변화 옵션) + scroll view가 childViewController에 있는 경우
@@ -194,6 +192,7 @@ class BottomSheet: UIViewController {
 		self.dismissListener = dismissListener
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
+		self.transitioningDelegate = self
 	}
 
 	// MARK: - bottom sheet view의 container view 와 child view controller의 view UI를 setting
@@ -213,24 +212,22 @@ class BottomSheet: UIViewController {
 		super.viewWillAppear(animated)
 //		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
 //		self.view.layoutIfNeeded()
-		self.view.setNeedsLayout()
+//		self.view.setNeedsLayout()
 //		sheetAppearAnimation(completion: showCompletion)
 	}
 
 	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
+		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
+		self.view.layoutIfNeeded()
 	}
 
 	public override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
-//		dismissSheet()	// 도움이 안됨...
-//		dismiss(animated: false, completion: nil)
 	}
 
 	public override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
-//		dismissSheet()	// 도움이 안됨...
-//		dismiss(animated: false, completion: nil)
 	}
 
 	/// bottom sheet 등장 애니메이션
@@ -491,23 +488,10 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 	}
 
 	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-//		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet, let toView = toViewController.view else {
-//			return
-//		}
-////		toViewController.topConstraint.constant = -400	// 임의로 하드코딩
-//
-//		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak toView] in
-//			toView?.layoutIfNeeded()
-//			toView?.backgroundColor = UIColor(white: 0, alpha: 0.5)
-//		}, completion: { success in
-//			transitionContext.completeTransition(success)	// -> success는 false
-//		})
 		let containerView = transitionContext.containerView
 
 		guard let toView = transitionContext.view(forKey: .to) else { return }
 		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet else { return }
-
-//		toView.transform = CGAffineTransform(translationX: 0, y: containerView.bounds.height)
 
 		containerView.addSubview(toView)
 		containerView.bringSubviewToFront(toView)
@@ -516,12 +500,9 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 			toView.transform = CGAffineTransform(translationX: 0, y: -300)
 			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		}, completion: { success in
-//			toViewController.topConstraint.constant = -toViewController.initialHeight
-			toViewController.topConstraint.constant = -300
 			toView.transform = .identity
 			transitionContext.completeTransition(success)
 		})
-//		toViewController.view.layoutIfNeeded()
 	}
 }
 

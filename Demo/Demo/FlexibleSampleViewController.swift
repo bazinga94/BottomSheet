@@ -13,7 +13,6 @@ class FlexibleSampleViewController: UIViewController, FlexibleBottomSheetDelegat
 	@IBAction func closeBottomSheet(_ sender: Any) {
 //		bottomSheet?.dismissSheet()
 		dismiss(animated: true, completion: nil)
-//		self.presentingViewController?.dismiss(animated: true, completion: nil)
 	}
 
 	@IBAction func navigationPush(_ sender: Any) {
