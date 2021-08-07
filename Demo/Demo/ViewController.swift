@@ -13,14 +13,14 @@ class ViewController: UIViewController {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
 		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
-		present(bottomSheet, animated: false, completion: nil)	// BottomSheet을 그냥 view controller present 하듯 사용하는 방법 찾기..! animated를 true로 주면 이상함...
+		present(bottomSheet, animated: true, completion: nil)	// BottomSheet을 그냥 view controller present 하듯 사용하는 방법 찾기..! animated를 true로 주면 이상함...
 	}
 
 	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
 		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
-		present(bottomSheet, animated: false, completion: nil)
+		present(bottomSheet, animated: true, completion: nil)
 	}
 
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {
