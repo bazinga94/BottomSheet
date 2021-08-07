@@ -472,7 +472,8 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 extension BottomSheet: UIViewControllerTransitioningDelegate {
 	// present될때 실행애니메이션
 	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-		return PresentAnimation()
+		let height = (modalType == .changeable) ? self.initialHeight : self.sheetHeight
+		return PresentAnimation(sheetHeight: height)
 	}
 
 	// dismiss될때 실행애니메이션
@@ -483,6 +484,12 @@ extension BottomSheet: UIViewControllerTransitioningDelegate {
 }
 
 class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
+	var sheetHeight: CGFloat
+
+	init(sheetHeight: CGFloat) {
+		self.sheetHeight = sheetHeight
+	}
+
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
 		return 0.3
 	}
@@ -497,7 +504,7 @@ class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
 		containerView.bringSubviewToFront(toView)
 
 		UIView.animate(withDuration: 0.3, animations: {
-			toView.transform = CGAffineTransform(translationX: 0, y: -300)
+			toView.transform = CGAffineTransform(translationX: 0, y: -self.sheetHeight)
 			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
 		}, completion: { success in
 			toView.transform = .identity
