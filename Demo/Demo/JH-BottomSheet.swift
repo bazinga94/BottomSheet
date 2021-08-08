@@ -510,35 +510,35 @@ extension BottomSheet: UIViewControllerAnimatedTransitioning {
 	}
 }
 
-class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
-	var sheetHeight: CGFloat
-
-	init(sheetHeight: CGFloat) {
-		self.sheetHeight = sheetHeight
-	}
-
-	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-		return 0.3
-	}
-
-	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-		let containerView = transitionContext.containerView
-
-		guard let toView = transitionContext.view(forKey: .to) else { return }
-		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet else { return }
-
-		containerView.addSubview(toView)
-		containerView.bringSubviewToFront(toView)
-
-		UIView.animate(withDuration: 0.3, animations: {
-			toView.transform = CGAffineTransform(translationX: 0, y: -self.sheetHeight)
-			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
-		}, completion: { success in
-			toView.transform = .identity
-			transitionContext.completeTransition(success)
-		})
-	}
-}
+//class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
+//	var sheetHeight: CGFloat
+//
+//	init(sheetHeight: CGFloat) {
+//		self.sheetHeight = sheetHeight
+//	}
+//
+//	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+//		return 0.3
+//	}
+//
+//	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+//		let containerView = transitionContext.containerView
+//
+//		guard let toView = transitionContext.view(forKey: .to) else { return }
+//		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet else { return }
+//
+//		containerView.addSubview(toView)
+//		containerView.bringSubviewToFront(toView)
+//
+//		UIView.animate(withDuration: 0.3, animations: {
+//			toView.transform = CGAffineTransform(translationX: 0, y: -self.sheetHeight)
+//			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
+//		}, completion: { success in
+//			toView.transform = .identity
+//			transitionContext.completeTransition(success)
+//		})
+//	}
+//}
 
 class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
