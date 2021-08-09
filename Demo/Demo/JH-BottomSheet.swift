@@ -479,14 +479,14 @@ extension BottomSheet: UIViewControllerTransitioningDelegate {
 
 	// dismiss될때 실행애니메이션
 	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-		return DismissAnimator()
+		return DismissAnimator(delay: Constant.delay, maxDimAlpha: Constant.maxDimAlpha)
 	}
 
 }
 
 extension BottomSheet: UIViewControllerAnimatedTransitioning {
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-		return 0.3
+		return Constant.delay
 	}
 
 	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -500,9 +500,9 @@ extension BottomSheet: UIViewControllerAnimatedTransitioning {
 
 		let height = (modalType == .changeable) ? self.initialHeight : self.sheetHeight
 
-		UIView.animate(withDuration: 0.3, animations: {
+		UIView.animate(withDuration: Constant.delay, animations: {
 			toView.transform = CGAffineTransform(translationX: 0, y: -height)
-			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
+			toViewController.view.backgroundColor = UIColor(white: 0, alpha: Constant.maxDimAlpha)
 		}, completion: { success in
 			toView.transform = .identity
 			transitionContext.completeTransition(success)
@@ -541,8 +541,17 @@ extension BottomSheet: UIViewControllerAnimatedTransitioning {
 //}
 
 class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+
+	let delay: Double
+	let maxDimAlpha: CGFloat
+
+	init(delay: Double, maxDimAlpha: CGFloat) {
+		self.delay = delay
+		self.maxDimAlpha = maxDimAlpha
+	}
+
 	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-		return 0.3
+		return delay
 	}
 
 	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
@@ -551,7 +560,7 @@ class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 		}
 		fromViewController.topConstraint.constant = 0
 
-		UIView.animate(withDuration: 0.3, delay: 0, options: [.curveEaseOut], animations: { [weak fromView] in
+		UIView.animate(withDuration: delay, delay: 0, options: [.curveEaseOut], animations: { [weak fromView] in
 			fromView?.layoutIfNeeded()
 			fromView?.backgroundColor = .clear
 		}, completion: { success in
