@@ -13,7 +13,8 @@ protocol BottomSheetDelegate: AnyObject {
 	func bottomSheetDidDismiss(_ bottomSheet: BottomSheet)
 }
 
-protocol FlexibleBottomSheetDelegate: AnyObject {
+// MARK: - BottomSheet that changes flexibly according to the "bottomSheetContentView"
+protocol BottomSheetFlexible: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
@@ -131,7 +132,7 @@ class BottomSheet: UIViewController {
 	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: UIViewController & FlexibleBottomSheetDelegate, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: UIViewController & BottomSheetFlexible, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
@@ -282,7 +283,7 @@ class BottomSheet: UIViewController {
 
 	// MARK: - 바텀시트 높이가 유동적인 경우 높이를 계산한다
 	private func setupContainerHeight() {
-		if modalType == .flexible, let flexibleBottomSheet = childViewController as? FlexibleBottomSheetDelegate {
+		if modalType == .flexible, let flexibleBottomSheet = childViewController as? BottomSheetFlexible {
 			var contentViewHeight = flexibleBottomSheet.bottomSheetContentView?.frame.size.height ?? 0
 			var statusBarHeight: CGFloat = 0.0
 			if #available(iOS 13.0, *) {
