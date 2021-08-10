@@ -474,7 +474,7 @@ extension BottomSheet: UIViewControllerTransitioningDelegate {
 	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 //		let height = (modalType == .changeable) ? self.initialHeight : self.sheetHeight
 //		return PresentAnimation(sheetHeight: height)
-		return self
+		return self	// return 하는 시점이 viewDidLoad 전 이기 때문에 Flexible BottomSheet 높이를 못찾는 경우가 있다.
 	}
 
 	// dismiss될때 실행애니메이션
