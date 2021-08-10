@@ -2,7 +2,7 @@
 //  SampleTableViewCell.swift
 //  Demo
 //
-//  Created by 60067671 on 2021/05/18.
+//  Created by Jongho Lee on 2021/05/18.
 //  Copyright © 2021 JH. All rights reserved.
 //
 

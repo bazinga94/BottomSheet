@@ -2,7 +2,7 @@
 //  JH-BottomSheet.swift
 //  Demo
 //
-//  Created by 60067671 on 2021/05/20.
+//  Created by Jongho Lee on 2021/05/20.
 //  Copyright © 2021 JH. All rights reserved.
 //
 
@@ -73,23 +73,24 @@ class BottomSheet: UIViewController {
 	private var childViewController: UIViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
-	private var dimColor: UIColor = UIColor(white: 0, alpha: Constant.maxDimAlpha) 		// 백그라운드 dim color
-	private var dim: Bool = true {
+	private var addBottomSafeAreaInset: Bool = true			// 바텀시트 높이 계산시, bottomSafeArea를 고려 여부
+	private var isExpand: Bool = false						// 바텀시트 확장 여부
+	private var sheetHeight: CGFloat = 0					// 바텀시트 높이
+	private var initialHeight: CGFloat = 0					// 확장 바텀시트의 최초 높이
+	fileprivate var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 top constraint
+	private var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
+	private var isKeyboardShow: Bool = false 				// 키보드가 등장한 상태인지 확인
+	private var modalType: ModalType = .fixed 				// 공통가이드의 Modal Type 구분
+//	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
+
+	// MARK: - Public variable
+	var dimColor: UIColor = UIColor(white: 0, alpha: Constant.maxDimAlpha) 		// background dim color
+	var dim: Bool = true {
 		didSet {
 			dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		}
 	}	// background dim 처리 여부
-	private var addBottomSafeAreaInset: Bool = true			// 바텀시트 높이 계산시, bottomSafeArea를 고려 여부
-	private var isTapDismiss: Bool = true 					// background가 tap으로 dismiss 되는지 여부
-	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
-	// MARK: - Public variable
-	var sheetHeight: CGFloat = 0							// 바텀시트 높이
-	var initialHeight: CGFloat = 0							// 확장 바텀시트의 최초 높이
-	var isExpand: Bool = false								// 바텀시트 확장 여부
-	var topConstraint: NSLayoutConstraint = NSLayoutConstraint.init()			// 바텀시트의 컨테이너뷰 top constraint
-	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
-	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
-	var modalType: ModalType = .fixed 						// 공통가이드의 Modal Type 구분
+	var isTapDismiss: Bool = true 							// background가 tap으로 dismiss 되는지 여부
 	var availablePanning: Bool = true						// bottom sheet의 panning 허용 여부
 	weak var delegate: BottomSheetDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
 
