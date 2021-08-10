@@ -12,14 +12,14 @@ class ViewController: UIViewController {
 	@IBAction func showFixedBottomSheet(_ sender: Any) {
 		let vc = UIViewController()
 		vc.view.backgroundColor = .red
-		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300, dim: true)
+		let bottomSheet = BottomSheet.init(childViewController: vc, height: 300)
 		present(bottomSheet, animated: true, completion: nil)	// BottomSheet을 그냥 view controller present 하듯 사용하는 방법 찾기..! animated를 true로 주면 이상함...
 	}
 
 	@IBAction func showFlexibleBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "FlexibleSheet") as! FlexibleSampleViewController
-		let bottomSheet = BottomSheet.init(childViewController: vc, dim: true, noAddBottomSafeArea: true)
+		let bottomSheet = BottomSheet.init(childViewController: vc, addBottomSafeAreaInset: false)
 		bottomSheet.delegate = self
 		present(bottomSheet, animated: true, completion: nil)
 	}
@@ -27,7 +27,7 @@ class ViewController: UIViewController {
 	@IBAction func showChangeableBottomSheet(_ sender: Any) {
 		let storyBoard: UIStoryboard! = UIStoryboard(name: "Main", bundle: nil)
 		let vc = storyBoard.instantiateViewController(withIdentifier: "TableViewSheet") as! TableViewSampleViewController
-		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600, dim: true, isTapDismiss: true, delegate: nil)
+		let bottomSheet = BottomSheet.init(childViewController: vc, initialHeight: 300, maxHeight: 600)
 		present(bottomSheet, animated: true, completion: nil)
 	}
 

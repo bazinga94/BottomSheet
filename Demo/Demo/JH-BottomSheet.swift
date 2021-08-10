@@ -73,10 +73,14 @@ class BottomSheet: UIViewController {
 	private var childViewController: UIViewController! 		// 바텀 시트에 들어갈 view들의 종류가 다양해서 나중에는 다양한 childViewController를 사용 할 것 같음
 	private let containerView = UIView()					// childViewController가 들어갈 컨테이너 뷰
 	private let backgroundView = UIView()					// 바텀시트 백그라운드 뷰
-	private var dimColor: UIColor!							// 백그라운드 dim color
-	private var dim: Bool = true							// 백그라운드 dim 여부
-	private var noAddBottomSafeArea: Bool = false			// 바텀시트 높이 계산시, bottomSafeArea를 고려하지 않습니다.
-	private var isTapDismiss: Bool = true 					// 백그라운드 뷰 터치시 dismiss 되는지 여부
+	private var dimColor: UIColor = UIColor(white: 0, alpha: Constant.maxDimAlpha) 		// 백그라운드 dim color
+	private var dim: Bool = true {
+		didSet {
+			dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
+		}
+	}	// background dim 처리 여부
+	private var addBottomSafeAreaInset: Bool = true			// 바텀시트 높이 계산시, bottomSafeArea를 고려 여부
+	private var isTapDismiss: Bool = true 					// background가 tap으로 dismiss 되는지 여부
 	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
 	// MARK: - Public variable
 	var sheetHeight: CGFloat = 0							// 바텀시트 높이
@@ -86,7 +90,7 @@ class BottomSheet: UIViewController {
 	var heightConstraint: NSLayoutConstraint = NSLayoutConstraint.init()		// 바텀시트의 컨테이너뷰 height constraint
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
 	var modalType: ModalType = .fixed 						// 공통가이드의 Modal Type 구분
-	var availablePanning: Bool = true						// panning 가능 여부
+	var availablePanning: Bool = true						// bottom sheet의 panning 허용 여부
 	weak var delegate: BottomSheetDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
 
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
@@ -102,23 +106,15 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: - bottom sheet initializer, child view controller를 container view로 사용한다.
+
 	/// bottom sheet initializer(높이 고정)
 	/// - Parameters:
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
 	///   - height: bottom sheet 높이
-	///   - dim: background dim 처리 확인
-	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
-	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController, height: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil) {
+	init(childViewController: UIViewController, height: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
-		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-		self.isTapDismiss = isTapDismiss
-		self.availablePanning = availablePanning
-		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .fixed
 		self.transitioningDelegate = self
@@ -126,24 +122,15 @@ class BottomSheet: UIViewController {
 
 	/// bottom sheet initializer(높이 유동적)
 	/// - Parameters:
-	///   - childViewController: bottom sheet의 container view에 들어갈 view controller(FlexibleBottomSheetDelegate를 상속)
-	///   - dim: background dim 처리 확인
-	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
-	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
+	///   - childViewController: bottom sheet의 container view에 들어갈 view controller(BottomSheetFlexible를 상속)
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: UIViewController & BottomSheetFlexible, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: UIViewController & BottomSheetFlexible, addBottomSafeAreaInset: Bool = true) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
-		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-		self.isTapDismiss = isTapDismiss
-		self.availablePanning = availablePanning
-		self.delegate = delegate
+		self.addBottomSafeAreaInset = addBottomSafeAreaInset
 //		self.modalPresentationStyle = .overFullScreen	// TODO: 이제 custom 타입만 사용해야 하는건지 확인!
 		self.modalPresentationStyle = .custom
 		self.modalType = .flexible
-		self.noAddBottomSafeArea = noAddBottomSafeArea
 		self.transitioningDelegate = self
 	}
 
@@ -152,20 +139,12 @@ class BottomSheet: UIViewController {
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
 	///   - initialHeight: bottom sheet 초기 높이
 	///   - maxHeight: bottom sheet 최대 높이
-	///   - dim: background dim 처리 확인
-	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, delegate: BottomSheetDelegate? = nil) {
+	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
 		self.sheetHeight = maxHeight + bottomSafeAreaInsets
 		self.initialHeight = initialHeight + bottomSafeAreaInsets
-		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-		self.isTapDismiss = isTapDismiss
-		self.availablePanning = true
-		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
 		self.transitioningDelegate = self
@@ -176,21 +155,13 @@ class BottomSheet: UIViewController {
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller & scroll view를 포함하는 경우
 	///   - initialHeight: bottom sheet 초기 높이
 	///   - maxHeight: bottom sheet 최대 높이
-	///   - dim: background dim 처리 확인
-	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
-	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, delegate: BottomSheetDelegate? = nil) {
+	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		childViewController.delegate = self
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
 		self.sheetHeight = maxHeight + bottomSafeAreaInsets
 		self.initialHeight = initialHeight + bottomSafeAreaInsets
-		self.dim = dim
-		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
-		self.isTapDismiss = isTapDismiss
-		self.availablePanning = true
-		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
 		self.transitioningDelegate = self
@@ -295,7 +266,7 @@ class BottomSheet: UIViewController {
 			if contentViewHeight > maxHeight { // view 최대 높이보다 큰 경우
 				contentViewHeight = maxHeight
 			}
-			sheetHeight = noAddBottomSafeArea ? contentViewHeight : contentViewHeight + getBottomSafeAreaInsets()
+			sheetHeight = addBottomSafeAreaInset ? contentViewHeight + getBottomSafeAreaInsets() : contentViewHeight
 			heightConstraint.constant = sheetHeight
 		}
 	}
