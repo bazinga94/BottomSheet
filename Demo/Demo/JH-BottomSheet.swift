@@ -8,9 +8,9 @@
 
 import UIKit
 
-// MARK: - BottomSheet dismiss listener
-protocol BottomSheetDismissListenerDelegate: AnyObject {
-	func afterDismiss()
+// MARK: - BottomSheet dismiss delegate
+protocol BottomSheetDelegate: AnyObject {
+	func bottomSheetDidDismiss(_ bottomSheet: BottomSheet)
 }
 
 protocol FlexibleBottomSheetDelegate: AnyObject {
@@ -86,7 +86,7 @@ class BottomSheet: UIViewController {
 	var isKeyboardShow: Bool = false 						// 키보드가 등장한 상태인지 확인
 	var modalType: ModalType = .fixed 						// 공통가이드의 Modal Type 구분
 	var availablePanning: Bool = true						// panning 가능 여부
-	weak var dismissListener: BottomSheetDismissListenerDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
+	weak var delegate: BottomSheetDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
 
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
@@ -109,7 +109,7 @@ class BottomSheet: UIViewController {
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController, height: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController, height: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -117,7 +117,7 @@ class BottomSheet: UIViewController {
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
-		self.dismissListener = dismissListener
+		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .fixed
 		self.transitioningDelegate = self
@@ -131,14 +131,14 @@ class BottomSheet: UIViewController {
 	///   - availablePanning: bottom sheet의 panning을 허용하는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: UIViewController & FlexibleBottomSheetDelegate, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil, noAddBottomSafeArea: Bool = false) {
+	init(childViewController: UIViewController & FlexibleBottomSheetDelegate, dim: Bool = true, isTapDismiss: Bool = true, availablePanning: Bool = true, delegate: BottomSheetDelegate? = nil, noAddBottomSafeArea: Bool = false) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.dim = dim
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = availablePanning
-		self.dismissListener = dismissListener
+		self.delegate = delegate
 //		self.modalPresentationStyle = .overFullScreen	// TODO: 이제 custom 타입만 사용해야 하는건지 확인!
 		self.modalPresentationStyle = .custom
 		self.modalType = .flexible
@@ -154,7 +154,7 @@ class BottomSheet: UIViewController {
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, delegate: BottomSheetDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
@@ -164,7 +164,7 @@ class BottomSheet: UIViewController {
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = true
-		self.dismissListener = dismissListener
+		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
 		self.transitioningDelegate = self
@@ -178,7 +178,7 @@ class BottomSheet: UIViewController {
 	///   - dim: background dim 처리 확인
 	///   - isTapDismiss: background가 tap으로 dismiss 되는지 확인
 	///   - dismissListener: bottom sheet가 dismiss 될때 수행되는 리스너, 해당 리스너는 dismissSheet의 completion handler 보다 우선순위가 낮음
-	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, dismissListener: BottomSheetDismissListenerDelegate? = nil) {
+	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat, dim: Bool = true, isTapDismiss: Bool = true, delegate: BottomSheetDelegate? = nil) {
 		super.init(nibName: nil, bundle: nil)
 		childViewController.delegate = self
 		self.childViewController = childViewController
@@ -189,7 +189,7 @@ class BottomSheet: UIViewController {
 		self.dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		self.isTapDismiss = isTapDismiss
 		self.availablePanning = true
-		self.dismissListener = dismissListener
+		self.delegate = delegate
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .changeable
 		self.transitioningDelegate = self
@@ -228,6 +228,7 @@ class BottomSheet: UIViewController {
 
 	public override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
+		delegate?.bottomSheetDidDismiss(self)
 	}
 
 	/// bottom sheet 등장 애니메이션
@@ -342,7 +343,7 @@ class BottomSheet: UIViewController {
 		}, completion: { _ in
 			self.dismiss(animated: false) {
 				guard let completion = completion else { // completion 함수가 없으면 dismiss listener의 afterDismiss 로직 수행
-					self.dismissListener?.afterDismiss()
+					self.delegate?.bottomSheetDidDismiss(self)
 					return
 				}
 				completion()
