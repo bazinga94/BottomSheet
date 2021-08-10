@@ -312,8 +312,7 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: - UITapGestureRecognizer의 selector에 인자로 줄 objc 함수
-	@objc func tapBackgroundView() {
-//		self.dismissSheet()
+	@objc private func tapBackgroundView() {
 		self.dismiss(animated: true, completion: nil)
 	}
 
@@ -322,34 +321,34 @@ class BottomSheet: UIViewController {
 	/// - Parameters:
 	///   - presentView: Bottom Sheet를 띄우는 UIViewController
 	///   - completion: UIViewController present 함수의 completion handler
-	public func show(presentView: UIViewController, completion: CommonFuncType? = nil) {
-		self.showCompletion = completion
-		presentView.present(self, animated: false, completion: nil)
-	}
+//	public func show(presentView: UIViewController, completion: CommonFuncType? = nil) {
+//		self.showCompletion = completion
+//		presentView.present(self, animated: false, completion: nil)
+//	}
 
 	// MARK: - bottom sheet를 dismiss
 	/**
 	bottom sheet dismiss
 	- Parameter: view의 dismiss closure
 	*/
-	public func dismissSheet(completion: CommonFuncType? = nil) {
-		topConstraint.constant = getBottomSafeAreaInsets()
-		childViewController.view.endEditing(true) // dismiss시 UITextField end editing
-
-		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
-			// 종료 Interaction: 내려갈 때 빠르게 시작해서 점점 속도가 줄면서 사라지는 형태
-			self.view.layoutIfNeeded()
-			self.view.backgroundColor = UIColor.clear
-		}, completion: { _ in
-			self.dismiss(animated: false) {
-				guard let completion = completion else { // completion 함수가 없으면 dismiss listener의 afterDismiss 로직 수행
-					self.delegate?.bottomSheetDidDismiss(self)
-					return
-				}
-				completion()
-			}
-		})
-	}
+//	private func dismissSheet(completion: CommonFuncType? = nil) {
+//		topConstraint.constant = getBottomSafeAreaInsets()
+//		childViewController.view.endEditing(true) // dismiss시 UITextField end editing
+//
+//		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
+//			// 종료 Interaction: 내려갈 때 빠르게 시작해서 점점 속도가 줄면서 사라지는 형태
+//			self.view.layoutIfNeeded()
+//			self.view.backgroundColor = UIColor.clear
+//		}, completion: { _ in
+//			self.dismiss(animated: false) {
+//				guard let completion = completion else { // completion 함수가 없으면 dismiss listener의 afterDismiss 로직 수행
+//					self.delegate?.bottomSheetDidDismiss(self)
+//					return
+//				}
+//				completion()
+//			}
+//		})
+//	}
 
 	/// bottom sheet 높이를 변경
 	/// - Parameter height: 변경 할 높이
@@ -365,7 +364,7 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: pan gesture 로직 구현
-	@objc func panGesture(_ gesture: UIPanGestureRecognizer) {
+	@objc private func panGesture(_ gesture: UIPanGestureRecognizer) {
 		isKeyboardShow ? keyboardPanGesture(gesture) : defaultPanGesture(gesture)
 	}
 
@@ -383,15 +382,15 @@ class BottomSheet: UIViewController {
 		if gesture.state == .began {
 			self.view.endEditing(true)
 		} else if gesture.state == .cancelled || gesture.state == .failed { // gesture가 중간에 중단되거나 recognizer가 일치 하지 않는 경우
-			dismissSheet()
+			self.dismiss(animated: true, completion: nil)
 		} else if gesture.state == .ended { // gesture가 종료된 경우
 			let velocity = gesture.velocity(in: self.view).y // 종료 시 panning 속도 확인
 			if velocity > Constant.flickingVelocity { // flicking이 아래로 발생한 경우
-				dismissSheet()
+				self.dismiss(animated: true, completion: nil)
 			} else if velocity < -Constant.flickingVelocity { // flicking이 위로 발생한 경우
 				(modalType == .changeable) ? resizeSheet(height: self.sheetHeight) : sheetAppearAnimation()
 			} else if newHeight <= initialHeight/2 { // 절반 이상 panning된 경우
-				dismissSheet()
+				self.dismiss(animated: true, completion: nil)
 			} else if newHeight > initialHeight {
 				resizeSheet(height: self.sheetHeight)
 			} else { // 절반 이하로 panning된 경우
@@ -416,11 +415,11 @@ class BottomSheet: UIViewController {
 		if gesture.state == .began {	// 특정 바텀시트에서만 panning이 발생할때 키보드를 내려주자
 			self.view.endEditing(true)
 		} else if gesture.state == .cancelled || gesture.state == .failed { // gesture가 중간에 중단되거나 recognizer가 일치 하지 않는 경우
-			dismissSheet()
+			self.dismiss(animated: true, completion: nil)
 		} else if gesture.state == .ended { // gesture가 종료된 경우
 			let velocity = gesture.velocity(in: self.view).y // 종료 시 panning 속도 확인
 			if isKeyboardShow && velocity > Constant.flickingVelocity {
-				dismissSheet()
+				self.dismiss(animated: true, completion: nil)
 				isKeyboardShow = false
 				return
 			}
