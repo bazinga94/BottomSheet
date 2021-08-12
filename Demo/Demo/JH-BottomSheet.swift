@@ -38,29 +38,19 @@ protocol ChangeableScrollContentsDelegate: AnyObject {
 	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
 }
 
-extension UIViewController {
-	var bottomSheet: BottomSheet? {
-		if var topController = getKeyWindow()?.rootViewController {
-			while let presentedViewController = topController.presentedViewController {
-				topController = presentedViewController
-			}
-			guard let bottomSheet = topController as? BottomSheet else { return nil }
-			return bottomSheet
-		}
-		return nil
-	}
-
-	// MARK: - return KeyWindow
-	func getKeyWindow() -> UIWindow? {
-		var window: UIWindow?
-		if #available(iOS 13.0, *) {
-			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
-		} else {
-			window = UIApplication.shared.keyWindow
-		}
-		return window
-	}
-}
+// 개발자의 몫인것 같아 만들어 줄 필요 없을듯
+//extension UIViewController {
+//	var bottomSheet: BottomSheet? {
+//		if var topController = getKeyWindow()?.rootViewController {
+//			while let presentedViewController = topController.presentedViewController {
+//				topController = presentedViewController
+//			}
+//			guard let bottomSheet = topController as? BottomSheet else { return nil }
+//			return bottomSheet
+//		}
+//		return nil
+//	}
+//}
 
 class BottomSheet: UIViewController {
 	// MARK: - Constant
@@ -407,6 +397,17 @@ class BottomSheet: UIViewController {
 			bottomSafeArea = getKeyWindow()?.safeAreaInsets.bottom ?? 0 // iOS 11 이상에서만 값을 가져온다.
 		}
 		return bottomSafeArea
+	}
+
+	// MARK: - return KeyWindow
+	private func getKeyWindow() -> UIWindow? {
+		var window: UIWindow?
+		if #available(iOS 13.0, *) {
+			window = UIApplication.shared.windows.filter { $0.isKeyWindow }.first
+		} else {
+			window = UIApplication.shared.keyWindow
+		}
+		return window
 	}
 }
 
