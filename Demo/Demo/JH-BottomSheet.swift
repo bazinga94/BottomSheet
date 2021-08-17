@@ -106,6 +106,7 @@ class BottomSheet: UIViewController {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
+		self.initialHeight = self.sheetHeight
 		self.modalPresentationStyle = .overFullScreen
 		self.modalType = .fixed
 		self.transitioningDelegate = self
@@ -258,6 +259,7 @@ class BottomSheet: UIViewController {
 				contentViewHeight = maxHeight
 			}
 			sheetHeight = addBottomSafeAreaInset ? contentViewHeight + getBottomSafeAreaInsets() : contentViewHeight
+			initialHeight = sheetHeight
 			heightConstraint.constant = sheetHeight
 		}
 	}
