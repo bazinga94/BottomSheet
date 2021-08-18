@@ -2,8 +2,7 @@
 //  JH-BottomSheet.swift
 //  BottomSheet
 //
-//  Created by Jongho Lee on 2021/03/04.
-//  Copyright © 2021 JH. All rights reserved.
+//  Created by Jongho Lee on 2021/08/18.
 //
 
 import UIKit
