@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BottomSheet
 
 class TableViewSampleViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 	@IBOutlet weak var tableView: BottomSheetTableView!

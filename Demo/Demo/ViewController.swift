@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import BottomSheet
 
 class ViewController: UIViewController {
 	@IBAction func showFixedBottomSheet(_ sender: Any) {

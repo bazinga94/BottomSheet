@@ -8,17 +8,17 @@
 import UIKit
 
 // MARK: - BottomSheet dismiss delegate
-protocol BottomSheetDelegate: AnyObject {
+public protocol BottomSheetDelegate: AnyObject {
 	func bottomSheetDidDismiss(_ bottomSheet: BottomSheet)
 }
 
 // MARK: - BottomSheet that changes flexibly according to the "bottomSheetContentView"
-protocol BottomSheetFlexible: AnyObject {
+public protocol BottomSheetFlexible: AnyObject {
 	var bottomSheetContentView: UIView! { get set }
 }
 
-class BottomSheetTableView: UITableView {
-	override func layoutSubviews() {
+public class BottomSheetTableView: UITableView {
+	public override func layoutSubviews() {
 		if (self.window == nil) {	// view가 아직 window에 add 되지 않은 상태(ViewDidLoad 단계에서는 add 되지 않음)
 			return
 		}
@@ -26,12 +26,12 @@ class BottomSheetTableView: UITableView {
 	}
 }
 
-protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
+public protocol ChangeableBottomSheetWithScrollView: UIScrollViewDelegate {
 	var tableView: BottomSheetTableView! { get set }
 	var delegate: ChangeableScrollContentsDelegate? { get set }
 }
 
-protocol ChangeableScrollContentsDelegate: AnyObject {
+public protocol ChangeableScrollContentsDelegate: AnyObject {
 	func contentsScrollViewDidScroll(_ scrollView: UIScrollView)
 	func contentsScrollViewWillBeginDragging(_ scrollView: UIScrollView)
 	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
@@ -51,7 +51,7 @@ protocol ChangeableScrollContentsDelegate: AnyObject {
 //	}
 //}
 
-class BottomSheet: UIViewController {
+public class BottomSheet: UIViewController {
 	// MARK: - Constant
 	private enum Constant {
 		static let delay: Double = 0.3
@@ -73,15 +73,15 @@ class BottomSheet: UIViewController {
 	//	private var showCompletion: CommonFuncType? 			// 바텀시트를 show 할때 수행 할 closure
 
 	// MARK: - Public variable
-	var dimColor: UIColor = UIColor(white: 0, alpha: Constant.maxDimAlpha) 		// background dim color
-	var dim: Bool = true {
+	public var dimColor: UIColor = UIColor(white: 0, alpha: Constant.maxDimAlpha) 		// background dim color
+	public var dim: Bool = true {
 		didSet {
 			dimColor = (dim) ? UIColor(white: 0, alpha: Constant.maxDimAlpha) : UIColor.clear
 		}
 	}	// background dim 처리 여부
-	var isTapDismiss: Bool = true 							// background가 tap으로 dismiss 되는지 여부
-	var availablePanning: Bool = true						// bottom sheet의 panning 허용 여부
-	weak var delegate: BottomSheetDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
+	public var isTapDismiss: Bool = true 							// background가 tap으로 dismiss 되는지 여부
+	public var availablePanning: Bool = true						// bottom sheet의 panning 허용 여부
+	public weak var delegate: BottomSheetDelegate? 				// dismiss 되었을때 로직을 수행 할 handler
 
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
@@ -101,7 +101,7 @@ class BottomSheet: UIViewController {
 	/// - Parameters:
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
 	///   - height: bottom sheet 높이
-	init(childViewController: UIViewController, height: CGFloat) {
+	public init(childViewController: UIViewController, height: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
@@ -115,7 +115,7 @@ class BottomSheet: UIViewController {
 	/// - Parameters:
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller(BottomSheetFlexible를 상속)
 	///   - noAddBottomSafeArea: bottomSafeArea를 Height 계산시 고려하지 않습니다.
-	init(childViewController: UIViewController & BottomSheetFlexible, addBottomSafeAreaInset: Bool = true) {
+	public init(childViewController: UIViewController & BottomSheetFlexible, addBottomSafeAreaInset: Bool = true) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.addBottomSafeAreaInset = addBottomSafeAreaInset
@@ -129,7 +129,7 @@ class BottomSheet: UIViewController {
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller
 	///   - initialHeight: bottom sheet 초기 높이
 	///   - maxHeight: bottom sheet 최대 높이
-	init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat) {
+	public init(childViewController: UIViewController, initialHeight: CGFloat, maxHeight: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
@@ -145,7 +145,7 @@ class BottomSheet: UIViewController {
 	///   - childViewController: bottom sheet의 container view에 들어갈 view controller & scroll view를 포함하는 경우
 	///   - initialHeight: bottom sheet 초기 높이
 	///   - maxHeight: bottom sheet 최대 높이
-	init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat) {
+	public init(childViewController: UIViewController & ChangeableBottomSheetWithScrollView, initialHeight: CGFloat, maxHeight: CGFloat) {
 		super.init(nibName: nil, bundle: nil)
 		childViewController.delegate = self
 		self.childViewController = childViewController
@@ -158,7 +158,7 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: - bottom sheet view의 container view 와 child view controller의 view UI를 setting
-	override func viewDidLoad() {
+	public override func viewDidLoad() {
 		super.viewDidLoad()
 		self.view.backgroundColor = .clear
 		setupContainerView()
@@ -170,21 +170,21 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: - bottom sheet 등장 애니메이션, constraint를 조정하고 배경 dimm을 준다.
-	override func viewWillAppear(_ animated: Bool) {
+	public override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
 	}
 
-	override func viewDidAppear(_ animated: Bool) {
+	public override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
 		changeTopConstraint()
 		self.view.layoutIfNeeded()
 	}
 
-	override func viewWillDisappear(_ animated: Bool) {
+	public override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 	}
 
-	override func viewDidDisappear(_ animated: Bool) {
+	public override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		delegate?.bottomSheetDidDismiss(self)
 	}
@@ -412,7 +412,7 @@ class BottomSheet: UIViewController {
 }
 
 extension BottomSheet: ChangeableScrollContentsDelegate {
-	func contentsScrollViewDidScroll(_ scrollView: UIScrollView) {
+	public func contentsScrollViewDidScroll(_ scrollView: UIScrollView) {
 		let offset = scrollView.contentOffset.y
 
 		if isExpand {
@@ -430,11 +430,11 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 		}
 	}
 
-	func contentsScrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+	public func contentsScrollViewWillBeginDragging(_ scrollView: UIScrollView) {
 		scrollView.showsVerticalScrollIndicator = isExpand
 	}
 
-	func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+	public func contentsScrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
 		let offset = scrollView.contentOffset.y
 
 		if offset == 0 {
@@ -445,25 +445,25 @@ extension BottomSheet: ChangeableScrollContentsDelegate {
 
 extension BottomSheet: UIViewControllerTransitioningDelegate {
 	// present될때 실행애니메이션
-	func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+	public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 		//		let height = (modalType == .changeable) ? self.initialHeight : self.sheetHeight
 		//		return PresentAnimation(sheetHeight: height)
 		return self	// return 하는 시점이 viewDidLoad 전 이기 때문에 Flexible BottomSheet 높이를 못찾는 경우가 있다.
 	}
 
 	// dismiss될때 실행애니메이션
-	func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+	public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
 		return DismissAnimator(delay: Constant.delay, maxDimAlpha: Constant.maxDimAlpha)
 	}
 
 }
 
 extension BottomSheet: UIViewControllerAnimatedTransitioning {
-	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+	public func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
 		return Constant.delay
 	}
 
-	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+	public func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
 		let containerView = transitionContext.containerView
 
 		guard let toView = transitionContext.view(forKey: .to) else { return }
