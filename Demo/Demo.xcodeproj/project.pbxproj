@@ -15,7 +15,33 @@
 		B25B7E1F25F0ADE100BA31C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E1E25F0ADE100BA31C1 /* Assets.xcassets */; };
 		B25B7E2225F0ADE100BA31C1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B25B7E2025F0ADE100BA31C1 /* LaunchScreen.storyboard */; };
 		B278BFD9265381E000F79CFD /* SampleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */; };
+		B2EBA1FD26CCC89500A40782 /* BottomSheet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B2EBA1F926CCC88900A40782 /* BottomSheet.framework */; };
+		B2EBA1FE26CCC89500A40782 /* BottomSheet.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B2EBA1F926CCC88900A40782 /* BottomSheet.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B2EBA1F826CCC88900A40782 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B2EBA1F426CCC88900A40782 /* BottomSheet.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B2EBA1E526CCC7A700A40782;
+			remoteInfo = BottomSheet;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B2EBA1FF26CCC89600A40782 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				B2EBA1FE26CCC89500A40782 /* BottomSheet.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		43702256265557600050EC77 /* FlexibleSampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlexibleSampleViewController.swift; sourceTree = "<group>"; };
@@ -28,6 +54,7 @@
 		B25B7E2125F0ADE100BA31C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B25B7E2325F0ADE100BA31C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B278BFD8265381E000F79CFD /* SampleTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleTableViewCell.swift; sourceTree = "<group>"; };
+		B2EBA1F426CCC88900A40782 /* BottomSheet.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BottomSheet.xcodeproj; path = ../../BottomSheet/BottomSheet.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -35,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B2EBA1FD26CCC89500A40782 /* BottomSheet.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -46,6 +74,7 @@
 			children = (
 				B25B7E1425F0ADDE00BA31C1 /* Demo */,
 				B25B7E1325F0ADDE00BA31C1 /* Products */,
+				B2EBA1FC26CCC89500A40782 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -60,6 +89,7 @@
 		B25B7E1425F0ADDE00BA31C1 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
+				B2EBA1F426CCC88900A40782 /* BottomSheet.xcodeproj */,
 				B25B7E1525F0ADDE00BA31C1 /* AppDelegate.swift */,
 				B25B7E1925F0ADDE00BA31C1 /* ViewController.swift */,
 				43702256265557600050EC77 /* FlexibleSampleViewController.swift */,
@@ -73,6 +103,21 @@
 			path = Demo;
 			sourceTree = "<group>";
 		};
+		B2EBA1F526CCC88900A40782 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B2EBA1F926CCC88900A40782 /* BottomSheet.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B2EBA1FC26CCC89500A40782 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -83,6 +128,7 @@
 				B25B7E0E25F0ADDE00BA31C1 /* Sources */,
 				B25B7E0F25F0ADDE00BA31C1 /* Frameworks */,
 				B25B7E1025F0ADDE00BA31C1 /* Resources */,
+				B2EBA1FF26CCC89600A40782 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -119,12 +165,28 @@
 			mainGroup = B25B7E0925F0ADDE00BA31C1;
 			productRefGroup = B25B7E1325F0ADDE00BA31C1 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B2EBA1F526CCC88900A40782 /* Products */;
+					ProjectRef = B2EBA1F426CCC88900A40782 /* BottomSheet.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				B25B7E1125F0ADDE00BA31C1 /* Demo */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B2EBA1F926CCC88900A40782 /* BottomSheet.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = BottomSheet.framework;
+			remoteRef = B2EBA1F826CCC88900A40782 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		B25B7E1025F0ADDE00BA31C1 /* Resources */ = {
