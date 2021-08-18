@@ -54,7 +54,7 @@ protocol ChangeableScrollContentsDelegate: AnyObject {
 
 class BottomSheet: UIViewController {
 	// MARK: - Constant
-	enum Constant {
+	private enum Constant {
 		static let delay: Double = 0.3
 		static let maxDimAlpha: CGFloat = 0.5
 		static let flickingVelocity: CGFloat = 2000
@@ -86,7 +86,7 @@ class BottomSheet: UIViewController {
 
 	typealias CommonFuncType =  ( () -> Void )				// callback 함수 typealias
 
-	enum ModalType {
+	private enum ModalType {
 		case fixed 		// Modal 높이 고정
 		case flexible 	// Modal 높이 유동적(bottomSheetContentView의 높이)
 		case changeable	// Modal 높이 고정 + flicking으로 높이 변화 가능
@@ -107,7 +107,7 @@ class BottomSheet: UIViewController {
 		self.childViewController = childViewController
 		self.sheetHeight = height + getBottomSafeAreaInsets()
 		self.initialHeight = self.sheetHeight
-		self.modalPresentationStyle = .overFullScreen
+		self.modalPresentationStyle = .custom
 		self.modalType = .fixed
 		self.transitioningDelegate = self
 	}
@@ -120,7 +120,6 @@ class BottomSheet: UIViewController {
 		super.init(nibName: nil, bundle: nil)
 		self.childViewController = childViewController
 		self.addBottomSafeAreaInset = addBottomSafeAreaInset
-//		self.modalPresentationStyle = .overFullScreen	// TODO: 이제 custom 타입만 사용해야 하는건지 확인!
 		self.modalPresentationStyle = .custom
 		self.modalType = .flexible
 		self.transitioningDelegate = self
@@ -137,7 +136,7 @@ class BottomSheet: UIViewController {
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
 		self.sheetHeight = maxHeight + bottomSafeAreaInsets
 		self.initialHeight = initialHeight + bottomSafeAreaInsets
-		self.modalPresentationStyle = .overFullScreen
+		self.modalPresentationStyle = .custom
 		self.modalType = .changeable
 		self.transitioningDelegate = self
 	}
@@ -154,13 +153,13 @@ class BottomSheet: UIViewController {
 		let bottomSafeAreaInsets = getBottomSafeAreaInsets()
 		self.sheetHeight = maxHeight + bottomSafeAreaInsets
 		self.initialHeight = initialHeight + bottomSafeAreaInsets
-		self.modalPresentationStyle = .overFullScreen
+		self.modalPresentationStyle = .custom
 		self.modalType = .changeable
 		self.transitioningDelegate = self
 	}
 
 	// MARK: - bottom sheet view의 container view 와 child view controller의 view UI를 setting
-	public override func viewDidLoad() {
+	override func viewDidLoad() {
 		super.viewDidLoad()
 		self.view.backgroundColor = .clear
 		setupContainerView()
@@ -172,33 +171,33 @@ class BottomSheet: UIViewController {
 	}
 
 	// MARK: - bottom sheet 등장 애니메이션, constraint를 조정하고 배경 dimm을 준다.
-	public override func viewWillAppear(_ animated: Bool) {
+	override func viewWillAppear(_ animated: Bool) {
 		super.viewWillAppear(animated)
-//		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
-//		self.view.layoutIfNeeded()
-//		self.view.setNeedsLayout()
-//		sheetAppearAnimation(completion: showCompletion)
 	}
 
-	public override func viewDidAppear(_ animated: Bool) {
+	override func viewDidAppear(_ animated: Bool) {
 		super.viewDidAppear(animated)
-		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
+		changeTopConstraint()
 		self.view.layoutIfNeeded()
 	}
 
-	public override func viewWillDisappear(_ animated: Bool) {
+	override func viewWillDisappear(_ animated: Bool) {
 		super.viewWillDisappear(animated)
 	}
 
-	public override func viewDidDisappear(_ animated: Bool) {
+	override func viewDidDisappear(_ animated: Bool) {
 		super.viewDidDisappear(animated)
 		delegate?.bottomSheetDidDismiss(self)
+	}
+
+	private func changeTopConstraint() {
+		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
 	}
 
 	/// bottom sheet 등장 애니메이션
 	/// - Parameter completion: show complete closure
 	private func sheetAppearAnimation(completion: CommonFuncType? = nil) {
-		topConstraint.constant = (modalType == .changeable) ? -self.initialHeight : -self.sheetHeight
+		changeTopConstraint()
 		UIView.animate(withDuration: Constant.delay, delay: 0, options: [.curveEaseOut], animations: {
 			// 호출 Interaction: 올라올 때 빠르게 시작해서 점점 속도가 주는 형태
 			self.view.backgroundColor = self.dimColor
@@ -485,36 +484,6 @@ extension BottomSheet: UIViewControllerAnimatedTransitioning {
 		})
 	}
 }
-
-//class PresentAnimation: NSObject, UIViewControllerAnimatedTransitioning {
-//	var sheetHeight: CGFloat
-//
-//	init(sheetHeight: CGFloat) {
-//		self.sheetHeight = sheetHeight
-//	}
-//
-//	func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
-//		return 0.3
-//	}
-//
-//	func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
-//		let containerView = transitionContext.containerView
-//
-//		guard let toView = transitionContext.view(forKey: .to) else { return }
-//		guard let toViewController = transitionContext.viewController(forKey: .to) as? BottomSheet else { return }
-//
-//		containerView.addSubview(toView)
-//		containerView.bringSubviewToFront(toView)
-//
-//		UIView.animate(withDuration: 0.3, animations: {
-//			toView.transform = CGAffineTransform(translationX: 0, y: -self.sheetHeight)
-//			toViewController.view.backgroundColor = UIColor(white: 0, alpha: 0.5)
-//		}, completion: { success in
-//			toView.transform = .identity
-//			transitionContext.completeTransition(success)
-//		})
-//	}
-//}
 
 class DismissAnimator: NSObject, UIViewControllerAnimatedTransitioning {
 
