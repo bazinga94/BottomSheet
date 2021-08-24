@@ -1,0 +1,62 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.3.2 (swiftlang-1200.0.45 clang-1200.0.32.28)
+// swift-module-flags: -target armv7-apple-ios9.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name BottomSheet
+@_exported import BottomSheet
+import Swift
+import UIKit
+public protocol BottomSheetDelegate : AnyObject {
+  func bottomSheetDidDismiss(_ bottomSheet: BottomSheet.BottomSheet)
+}
+public protocol BottomSheetFlexible : AnyObject {
+  var bottomSheetContentView: UIKit.UIView! { get set }
+}
+@objc @_inheritsConvenienceInitializers public class BottomSheetTableView : UIKit.UITableView {
+  @objc override dynamic public func layoutSubviews()
+  @objc deinit
+  @objc override dynamic public init(frame: CoreGraphics.CGRect, style: UIKit.UITableView.Style)
+  @objc required dynamic public init?(coder: Foundation.NSCoder)
+}
+public protocol ChangeableBottomSheetWithScrollView : UIKit.UIScrollViewDelegate {
+  var tableView: BottomSheet.BottomSheetTableView! { get set }
+  var delegate: BottomSheet.ChangeableScrollContentsDelegate? { get set }
+}
+public protocol ChangeableScrollContentsDelegate : AnyObject {
+  func contentsScrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  func contentsScrollViewWillBeginDragging(_ scrollView: UIKit.UIScrollView)
+  func contentsScrollViewDidEndDragging(_ scrollView: UIKit.UIScrollView, willDecelerate decelerate: Swift.Bool)
+}
+@objc @_hasMissingDesignatedInitializers public class BottomSheet : UIKit.UIViewController {
+  public var dimColor: UIKit.UIColor
+  public var dim: Swift.Bool {
+    get
+    set
+  }
+  public var isTapDismiss: Swift.Bool
+  public var availablePanning: Swift.Bool
+  weak public var delegate: BottomSheet.BottomSheetDelegate?
+  public init(childViewController: UIKit.UIViewController, height: CoreGraphics.CGFloat)
+  public init(childViewController: UIKit.UIViewController & BottomSheet.BottomSheetFlexible, addBottomSafeAreaInset: Swift.Bool = true)
+  public init(childViewController: UIKit.UIViewController, initialHeight: CoreGraphics.CGFloat, maxHeight: CoreGraphics.CGFloat)
+  public init(childViewController: UIKit.UIViewController & BottomSheet.ChangeableBottomSheetWithScrollView, initialHeight: CoreGraphics.CGFloat, maxHeight: CoreGraphics.CGFloat)
+  @objc override dynamic public func viewDidLoad()
+  @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @objc override dynamic public func viewDidAppear(_ animated: Swift.Bool)
+  @objc override dynamic public func viewWillDisappear(_ animated: Swift.Bool)
+  @objc override dynamic public func viewDidDisappear(_ animated: Swift.Bool)
+  public func resizeSheet(height: CoreGraphics.CGFloat)
+  @objc deinit
+  @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+}
+extension BottomSheet : BottomSheet.ChangeableScrollContentsDelegate {
+  public func contentsScrollViewDidScroll(_ scrollView: UIKit.UIScrollView)
+  public func contentsScrollViewWillBeginDragging(_ scrollView: UIKit.UIScrollView)
+  public func contentsScrollViewDidEndDragging(_ scrollView: UIKit.UIScrollView, willDecelerate decelerate: Swift.Bool)
+}
+extension BottomSheet : UIKit.UIViewControllerTransitioningDelegate {
+  @objc dynamic public func animationController(forPresented presented: UIKit.UIViewController, presenting: UIKit.UIViewController, source: UIKit.UIViewController) -> UIKit.UIViewControllerAnimatedTransitioning?
+  @objc dynamic public func animationController(forDismissed dismissed: UIKit.UIViewController) -> UIKit.UIViewControllerAnimatedTransitioning?
+}
+extension BottomSheet : UIKit.UIViewControllerAnimatedTransitioning {
+  @objc dynamic public func transitionDuration(using transitionContext: UIKit.UIViewControllerContextTransitioning?) -> Foundation.TimeInterval
+  @objc dynamic public func animateTransition(using transitionContext: UIKit.UIViewControllerContextTransitioning)
+}

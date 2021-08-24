@@ -1,0 +1,11 @@
+framework module BottomSheet {
+  umbrella header "BottomSheet.h"
+
+  export *
+  module * { export * }
+}
+
+module BottomSheet.Swift {
+    header "BottomSheet-Swift.h"
+    requires objc
+}
