@@ -15,7 +15,7 @@ Pod::Spec.new do |spec|
   #  summary should be tweet-length, and the description more in depth.
   #
 
-  spec.name         = "BottomSheet"
+  spec.name         = "JHBottomSheet"
   spec.version      = "1.0.1"
   spec.summary      = "Elegant bottom sheet(modal) by swift."
 
