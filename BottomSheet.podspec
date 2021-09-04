@@ -16,7 +16,7 @@ Pod::Spec.new do |spec|
   #
 
   spec.name         = "BottomSheet"
-  spec.version      = "1.0.0"
+  spec.version      = "1.0.1"
   spec.summary      = "Elegant bottom sheet(modal) by swift."
 
   # This description is used to generate tags and improve search results.
@@ -25,7 +25,10 @@ Pod::Spec.new do |spec|
   #   * Write the description between the DESC delimiters below.
   #   * Finally, don't worry about the indent, CocoaPods strips it!
   spec.description  = <<-DESC
-  Simple and elegant bottom sheet(modal) by swift.
+  Elegant bottom sheet(modal) by swift.
+  A library that can easily show bottom modal sheets.
+  It can handle complex bottom sheets with fixed heights, flexible heights, and view controller with table view.
+  You can use it like a view controller.
                    DESC
 
   spec.homepage     = "https://github.com/bazinga94/BottomSheet"
@@ -40,7 +43,7 @@ Pod::Spec.new do |spec|
   #
 
   # spec.license      = "MIT"
-  # spec.license      = { :type => "MIT", :file => "FILE_LICENSE" }
+  spec.license      = { :type => "MIT", :file => "LICENSE" }
 
 
   # ――― Author Metadata  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -64,8 +67,8 @@ Pod::Spec.new do |spec|
   #  the deployment target. You can optionally include the target after the platform.
   #
 
-  spec.platform     = :ios
-  # spec.platform     = :ios, "9.0"
+  # spec.platform     = :ios
+  spec.platform     = :ios, "9.0"
 
   #  When using multiple platforms
   spec.ios.deployment_target = "9.0"
@@ -74,7 +77,7 @@ Pod::Spec.new do |spec|
   # spec.tvos.deployment_target = "9.0"
 
   # ――― Swift Specifics ――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  spec.swift_versions = "5.0"
+  spec.swift_versions = "4.2"
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
