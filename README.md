@@ -10,7 +10,51 @@
 💫 Elegant bottom sheet(modal) by swift
 
 <!-- ![](gif/Demo.gif) -->
-<center><img src="https://github.com/bazinga94/BottomSheet/blob/main/gif/Demo.gif" width="200" height="500"></center>
+<center><img src="https://github.com/bazinga94/BottomSheet/blob/main/gif/Demo.gif" width="250" height="600"></center>
 
-사용 예시
-https://github.com/bazinga94/BottomSheet-Demo
+## Try it
+
+Explore the [BottomSheet Demo](https://github.com/bazinga94/BottomSheet-Demo) or clone the repository. 
+
+## Installation
+
+### Swift Package Manager
+
+* <a href="https://guides.cocoapods.org/using/using-cocoapods.html" target="_blank">CocoaPods</a>:
+
+```ruby
+pod 'JHBottomSheet', '~> 1.0.1'
+```
+
+* <a href="https://swift.org/package-manager/" target="_blank">Swift Package Manager</a>:
+
+```swift
+dependencies: [
+  .package(url: "https://github.com/bazinga94/BottomSheet.git", .exact("1.0.1")),
+],
+```
+
+## Usage
+
+Include the UIViewController to be presented in the BottomSheet initializer. After that, you can use it like presenting and dismissing UIViewController.
+
+```swift
+let bottomSheet = BottomSheet.init(childViewController: yourViewController, height: 500)
+present(bottomSheet, animated: true, completion: nil)
+```
+
+If you adopt the BottomSheetFlexible protocol and want to present the bottom sheet as much as the size of the view, you don't need to include the height.
+
+```swift
+public protocol BottomSheetFlexible: AnyObject {
+	var bottomSheetContentView: UIView! { get set }
+}
+```
+
+## Authors
+
+[Jongho Lee](https://github.com/bazinga94)
+
+## License
+
+<b>BottomSheet</b> is released under a MIT License. See LICENSE file for details.
