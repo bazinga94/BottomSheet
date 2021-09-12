@@ -9,8 +9,8 @@
 
 💫 Elegant bottom sheet(modal) by swift
 
-![](gif/Demo.gif)
-![]<img src="https://github.com/bazinga94/BottomSheet/blob/main/gif/Demo.gif" width="400" height="790">
+<!-- ![](gif/Demo.gif) -->
+<center><img src="https://github.com/bazinga94/BottomSheet/blob/main/gif/Demo.gif" width="200" height="500"></center>
 
 사용 예시
 https://github.com/bazinga94/BottomSheet-Demo
