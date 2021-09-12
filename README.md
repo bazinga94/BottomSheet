@@ -9,7 +9,7 @@
 
 💫 Elegant bottom sheet(modal) by swift
 
-![](gif/Demo2.gif)
+![](gif/Demo.gif)
 
 사용 예시
 https://github.com/bazinga94/BottomSheet-Demo
